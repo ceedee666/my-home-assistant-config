@@ -1,0 +1,137 @@
+set_livingroom_temperature:
+  alias: Set Livingroom Temperature
+  sequence:
+  - if:
+    - alias: Nobody Home
+      condition: state
+      entity_id: input_boolean.nobody_home_mode
+      state: 'on'
+    then:
+    - alias: Turn heating off
+      service: climate.set_temperature
+      data:
+        hvac_mode: 'off'
+        temperature: 5
+      target:
+        entity_id: climate.room_climate_living_room
+    else:
+    - if:
+      - alias: Livingroom Climate Overwrite
+        condition: state
+        entity_id: input_boolean.livingroom_climate_overwrite
+        state: 'on'
+      then:
+      - alias: Turn heating on
+        service: climate.set_temperature
+        data:
+          hvac_mode: auto
+          temperature: 19
+        target:
+          entity_id: climate.room_climate_living_room
+      else:
+      - if:
+        - alias: Use Schedule
+          condition: state
+          entity_id: schedule.livingroom_schedule
+          state: 'on'
+        then:
+        - alias: Turn heating on
+          service: climate.set_temperature
+          data:
+            hvac_mode: auto
+            temperature: 19
+          target:
+            entity_id: climate.room_climate_living_room
+        else:
+          service: climate.set_temperature
+          data:
+            hvac_mode: 'off'
+            temperature: 5
+          target:
+            entity_id: climate.room_climate_living_room
+  mode: single
+  icon: mdi:thermometer-auto
+set_bathroom_temperature:
+  alias: Set Bathroom Temperature
+  sequence:
+  - if:
+    - alias: Nobody Home
+      condition: state
+      entity_id: input_boolean.nobody_home_mode
+      state: 'on'
+    then:
+    - alias: Turn heating off
+      service: climate.set_temperature
+      data:
+        hvac_mode: 'off'
+        temperature: 5
+      target:
+        entity_id: climate.room_climate_bathroom
+    else:
+    - if:
+      - alias: Bathroom Climate Overwrite
+        condition: state
+        entity_id: input_boolean.bathroom_climate_overwrite
+        state: 'on'
+      then:
+      - alias: Turn heating on
+        service: climate.set_temperature
+        data:
+          hvac_mode: auto
+          temperature: 21
+        target:
+          entity_id: climate.room_climate_bathroom
+      else:
+      - if:
+        - alias: Use Schedule
+          condition: state
+          entity_id: schedule.bathroom_schedule
+          state: 'on'
+        then:
+        - alias: Turn heating on
+          service: climate.set_temperature
+          data:
+            hvac_mode: auto
+            temperature: 21
+          target:
+            entity_id: climate.room_climate_bathroom
+        else:
+          service: climate.set_temperature
+          data:
+            hvac_mode: 'off'
+            temperature: 5
+          target:
+            entity_id: climate.room_climate_bathroom
+  mode: single
+  icon: mdi:thermometer-auto
+shutter_ground_floor:
+  alias: Shutters Ground Floor
+  sequence:
+  - if:
+    - alias: Nobody Home
+      condition: state
+      entity_id: input_boolean.nobody_home_mode
+      state: 'on'
+    then:
+    - service: cover.close_cover
+      data: {}
+      target:
+        entity_id: cover.shutter_kitchen
+    else:
+    - if:
+      - condition: state
+        entity_id: sun.sun
+        attribute: rising
+        state: false
+      then:
+      - service: cover.close_cover
+        data: {}
+        target:
+          entity_id: cover.shutter_kitchen
+      else:
+      - service: cover.open_cover
+        data: {}
+        target:
+          entity_id: cover.shutter_kitchen
+  mode: single
+  icon: mdi:window-shutter-auto

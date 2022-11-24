@@ -1,0 +1,13 @@
+parents:
+  name: "Eltern"
+  entities:
+    - person.christian
+    - person.halszka
+
+family:
+  name: "Familie"
+  entities:
+    - person.christian
+    - person.halszka
+    - person.matylda
+    - person.irmina

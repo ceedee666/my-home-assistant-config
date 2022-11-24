@@ -1,0 +1,11 @@
+nobody_home_mode:
+  name: Nobody Home Mode
+  icon: mdi:home-off
+
+livingroom_climate_overwrite:
+  name: Livingroom Heating
+  icon: mdi:sofa
+
+bathroom_climate_overwrite:
+  name: Heating Bathroom 1st Floor
+  icon: mdi:shower

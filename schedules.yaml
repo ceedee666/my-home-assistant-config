@@ -1,0 +1,49 @@
+bathroom_schedule:
+  name: "Bathroom schedule"
+  icon: "mdi:calendar-clock"
+  monday:
+    - from: "06:00:00"
+      to: "07:00:00"
+  tuesday:
+    - from: "06:00:00"
+      to: "07:00:00"
+  wednesday:
+    - from: "06:00:00"
+      to: "07:00:00"
+  thursday:
+    - from: "06:00:00"
+      to: "07:00:00"
+  friday:
+    - from: "06:00:00"
+      to: "07:00:00"
+  saturday:
+    - from: "07:00:00"
+      to: "09:00:00"
+  sunday:
+    - from: "07:00:00"
+      to: "09:00:00"
+
+livingroom_schedule:
+  name: "Livingroom schedule"
+  icon: "mdi:calendar-clock"
+  monday:
+    - from: "16:00:00"
+      to: "19:00:00"
+  tuesday:
+    - from: "16:00:00"
+      to: "19:00:00"
+  wednesday:
+    - from: "16:00:00"
+      to: "19:00:00"
+  thursday:
+    - from: "16:00:00"
+      to: "19:00:00"
+  friday:
+    - from: "16:00:00"
+      to: "19:00:00"
+  saturday:
+    - from: "07:00:00"
+      to: "20:00:00"
+  sunday:
+    - from: "07:00:00"
+      to: "20:00:00"

@@ -1,0 +1,86 @@
+- id: '1667751649894'
+  alias: Parents Away
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - group.parents
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    to: not_home
+  condition: []
+  action:
+  - type: turn_off
+    device_id: cad162c8175f64ff891fc0e98b3f5fac
+    entity_id: switch.smart_plug_projector
+    domain: switch
+  mode: single
+- id: '1667751778258'
+  alias: Parents Home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - group.parents
+    to: home
+  condition: []
+  action:
+  - type: turn_on
+    device_id: cad162c8175f64ff891fc0e98b3f5fac
+    entity_id: switch.smart_plug_projector
+    domain: switch
+  mode: single
+- id: '1668717945716'
+  alias: Livingroom Heating Automation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - schedule.livingroom_schedule
+    - input_boolean.livingroom_climate_overwrite
+    - input_boolean.nobody_home_mode
+  condition: []
+  action:
+  - service: script.turn_on
+    data: {}
+    target:
+      entity_id: script.set_livingroom_temperature
+  mode: single
+- id: '1668718804366'
+  alias: Bathroom 1st Floor Heating Automation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - schedule.bathroom_schedule
+    - input_boolean.bathroom_climate_overwrite
+    - input_boolean.nobody_home_mode
+  condition: []
+  action:
+  - service: script.turn_on
+    data: {}
+    target:
+      entity_id: script.set_bathroom_temperature
+  mode: single
+- id: '1669199427390'
+  alias: Shutters Ground Floor Automation
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: '- 00:30:00'
+  - platform: sun
+    event: sunset
+    offset: 00:30:00
+  - platform: state
+    entity_id:
+    - input_boolean.nobody_home_mode
+  condition: []
+  action:
+  - service: script.turn_on
+    data: {}
+    target:
+      entity_id: script.shutter_ground_floor
+  mode: single
