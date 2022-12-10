@@ -47,3 +47,47 @@ livingroom_schedule:
   sunday:
     - from: "07:00:00"
       to: "20:00:00"
+
+wlan_schedule:
+  name: "WLAN schedule"
+  icon: "mdi:calendar-clock"
+  monday:
+    - from: "06:00:00"
+      to: "23:59:59"
+  tuesday:
+    - from: "06:00:00"
+      to: "23:59:59"
+  wednesday:
+    - from: "06:00:00"
+      to: "23:59:59"
+  thursday:
+    - from: "06:00:00"
+      to: "23:59:59"
+  friday:
+    - from: "06:00:00"
+      to: "23:59:59"
+  saturday:
+    - from: "06:00:00"
+      to: "23:59:59"
+  sunday:
+    - from: "06:00:00"
+      to: "23:59:59"
+
+office_schedule:
+  name: "Office schedule"
+  icon: "mdi:calendar-clock"
+  monday:
+    - from: "07:30:00"
+      to: "19:00:00"
+  tuesday:
+    - from: "07:30:00"
+      to: "19:00:00"
+  wednesday:
+    - from: "07:30:00"
+      to: "19:00:00"
+  thursday:
+    - from: "07:30:00"
+      to: "19:00:00"
+  friday:
+    - from: "07:30:00"
+      to: "19:00:00"

@@ -1,37 +1,3 @@
-- id: '1667751649894'
-  alias: Parents Away
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - group.parents
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 0
-    to: not_home
-  condition: []
-  action:
-  - type: turn_off
-    device_id: cad162c8175f64ff891fc0e98b3f5fac
-    entity_id: switch.smart_plug_projector
-    domain: switch
-  mode: single
-- id: '1667751778258'
-  alias: Parents Home
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - group.parents
-    to: home
-  condition: []
-  action:
-  - type: turn_on
-    device_id: cad162c8175f64ff891fc0e98b3f5fac
-    entity_id: switch.smart_plug_projector
-    domain: switch
-  mode: single
 - id: '1668717945716'
   alias: Livingroom Heating Automation
   description: ''
@@ -83,4 +49,36 @@
     data: {}
     target:
       entity_id: script.shutter_ground_floor
+  mode: single
+- id: '1670275026327'
+  alias: Offices Automation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - group.parents
+    - input_boolean.office_overwrite
+    - input_boolean.nobody_home_mode
+    - schedule.office_schedule
+  condition: []
+  action:
+  - service: script.turn_on
+    data: {}
+    target:
+      entity_id: script.offices_power_save
+  mode: single
+- id: '1670587127896'
+  alias: WLAN Automation
+  description: WLAN Power Save Trigger
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.office_overwrite
+    - schedule.wlan_schedule
+  condition: []
+  action:
+  - service: script.turn_on
+    data: {}
+    target:
+      entity_id: script.wlan_power_save
   mode: single

@@ -9,3 +9,11 @@ livingroom_climate_overwrite:
 bathroom_climate_overwrite:
   name: Heating Bathroom 1st Floor
   icon: mdi:shower
+
+office_overwrite:
+  name: Offices Active
+  icon: mdi:desk
+
+wlan_overwrite:
+  name: WLAN Active
+  icon: mdi:router-wireless

@@ -116,7 +116,9 @@ shutter_ground_floor:
     - service: cover.close_cover
       data: {}
       target:
-        entity_id: cover.shutter_kitchen
+        entity_id:
+        - cover.shutter_kitchen
+        device_id: e6c8abc9d127f425e67c65287626af59
     else:
     - if:
       - condition: state
@@ -127,11 +129,128 @@ shutter_ground_floor:
       - service: cover.close_cover
         data: {}
         target:
-          entity_id: cover.shutter_kitchen
+          entity_id:
+          - cover.shutter_kitchen
+          device_id: e6c8abc9d127f425e67c65287626af59
       else:
       - service: cover.open_cover
         data: {}
         target:
-          entity_id: cover.shutter_kitchen
+          entity_id:
+          - cover.shutter_kitchen
+          device_id: e6c8abc9d127f425e67c65287626af59
   mode: single
   icon: mdi:window-shutter-auto
+offices_power_save:
+  alias: Offices Power Save
+  sequence:
+  - if:
+    - alias: Nobody Home
+      condition: state
+      entity_id: input_boolean.nobody_home_mode
+      state: 'on'
+    then:
+    - alias: Turn Office Christian Off
+      type: turn_off
+      device_id: cad162c8175f64ff891fc0e98b3f5fac
+      entity_id: switch.smart_plug_office_christian
+      domain: switch
+    - alias: Turn Office Halszka Off
+      type: turn_off
+      device_id: 84732e8f18c85a1081837adcde98f507
+      entity_id: light.hue_smart_plug_3
+      domain: light
+    else:
+    - if:
+      - alias: Office Automation Overwrite
+        condition: state
+        entity_id: input_boolean.office_overwrite
+        state: 'on'
+      then:
+      - alias: Turn Office Christian On
+        type: turn_on
+        device_id: cad162c8175f64ff891fc0e98b3f5fac
+        entity_id: switch.smart_plug_office_christian
+        domain: switch
+      - alias: Turn Office Halszka On
+        type: turn_on
+        device_id: 84732e8f18c85a1081837adcde98f507
+        entity_id: light.hue_smart_plug_3
+        domain: light
+      else:
+      - if:
+        - alias: Parents Away
+          condition: state
+          entity_id: group.parents
+          state: away
+        then:
+        - alias: Turn Office Christian Off
+          type: turn_off
+          device_id: cad162c8175f64ff891fc0e98b3f5fac
+          entity_id: switch.smart_plug_office_christian
+          domain: switch
+        - alias: Turn Office Halszka Off
+          type: turn_off
+          device_id: 84732e8f18c85a1081837adcde98f507
+          entity_id: light.hue_smart_plug_3
+          domain: light
+        else:
+        - if:
+          - alias: Use Office Schedule
+            condition: state
+            entity_id: schedule.office_schedule
+            state: 'on'
+          then:
+          - alias: Turn Office Christian On
+            type: turn_on
+            device_id: cad162c8175f64ff891fc0e98b3f5fac
+            entity_id: switch.smart_plug_office_christian
+            domain: switch
+          - alias: Turn Office Halszka On
+            type: turn_on
+            device_id: 84732e8f18c85a1081837adcde98f507
+            entity_id: light.hue_smart_plug_3
+            domain: light
+          else:
+          - alias: Turn Office Christian Off
+            type: turn_off
+            device_id: cad162c8175f64ff891fc0e98b3f5fac
+            entity_id: switch.smart_plug_office_christian
+            domain: switch
+          - alias: Turn Office Halszka Off
+            type: turn_off
+            device_id: 84732e8f18c85a1081837adcde98f507
+            entity_id: light.hue_smart_plug_3
+            domain: light
+  mode: single
+  icon: mdi:desk
+wlan_power_save:
+  alias: WLAN Power Save
+  sequence:
+  - if:
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: schedule.wlan_schedule
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.wlan_overwrite
+        state: 'on'
+    then:
+    - service: switch.turn_on
+      data: {}
+      target:
+        entity_id:
+        - switch.fritz_box_7590_wi_fi_mat_mina_rus_ada_2_4ghz
+        - switch.fritz_box_7590_wi_fi_mat_mina_rus_ada_5ghz
+        - switch.fritz_box_7590_wi_fi_sf4_guest
+    else:
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id:
+        - switch.fritz_box_7590_wi_fi_mat_mina_rus_ada_5ghz
+        - switch.fritz_box_7590_wi_fi_mat_mina_rus_ada_2_4ghz
+        - switch.fritz_box_7590_wi_fi_sf4_guest
+  mode: single
+  icon: mdi:router-wireless
