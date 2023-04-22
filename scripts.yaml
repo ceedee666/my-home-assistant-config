@@ -2,10 +2,16 @@ set_livingroom_temperature:
   alias: Set Livingroom Temperature
   sequence:
   - if:
-    - alias: Nobody Home
-      condition: state
-      entity_id: input_boolean.nobody_home_mode
-      state: 'on'
+    - condition: or
+      conditions:
+      - alias: Nobody Home
+        condition: state
+        entity_id: input_boolean.nobody_home_mode
+        state: 'on'
+      - alias: Heating Off
+        condition: state
+        entity_id: input_boolean.heating_off
+        state: 'on'
     then:
     - alias: Turn heating off
       service: climate.set_temperature
@@ -55,10 +61,16 @@ set_bathroom_temperature:
   alias: Set Bathroom Temperature
   sequence:
   - if:
-    - alias: Nobody Home
-      condition: state
-      entity_id: input_boolean.nobody_home_mode
-      state: 'on'
+    - condition: or
+      conditions:
+      - alias: Nobody Home
+        condition: state
+        entity_id: input_boolean.nobody_home_mode
+        state: 'on'
+      - alias: Heating Off
+        condition: state
+        entity_id: input_boolean.heating_off
+        state: 'on'
     then:
     - alias: Turn heating off
       service: climate.set_temperature
@@ -117,8 +129,9 @@ shutter_ground_floor:
       data: {}
       target:
         entity_id:
-        - cover.shutter_kitchen
-        device_id: e6c8abc9d127f425e67c65287626af59
+        - cover.shutter_kittchen
+        - cover.shutter_left
+        - cover.shutter_right
     else:
     - if:
       - condition: state
@@ -130,15 +143,17 @@ shutter_ground_floor:
         data: {}
         target:
           entity_id:
-          - cover.shutter_kitchen
-          device_id: e6c8abc9d127f425e67c65287626af59
+          - cover.shutter_kittchen
+          - cover.shutter_left
+          - cover.shutter_right
       else:
       - service: cover.open_cover
         data: {}
         target:
           entity_id:
-          - cover.shutter_kitchen
-          device_id: e6c8abc9d127f425e67c65287626af59
+          - cover.shutter_kittchen
+          - cover.shutter_left
+          - cover.shutter_right
   mode: single
   icon: mdi:window-shutter-auto
 offices_power_save:
@@ -155,11 +170,6 @@ offices_power_save:
       device_id: cad162c8175f64ff891fc0e98b3f5fac
       entity_id: switch.smart_plug_office_christian
       domain: switch
-    - alias: Turn Office Halszka Off
-      type: turn_off
-      device_id: 84732e8f18c85a1081837adcde98f507
-      entity_id: light.hue_smart_plug_3
-      domain: light
     else:
     - if:
       - alias: Office Automation Overwrite
@@ -172,85 +182,117 @@ offices_power_save:
         device_id: cad162c8175f64ff891fc0e98b3f5fac
         entity_id: switch.smart_plug_office_christian
         domain: switch
-      - alias: Turn Office Halszka On
-        type: turn_on
-        device_id: 84732e8f18c85a1081837adcde98f507
-        entity_id: light.hue_smart_plug_3
-        domain: light
       else:
       - if:
         - alias: Parents Away
           condition: state
           entity_id: group.parents
-          state: away
+          state: not_home
         then:
         - alias: Turn Office Christian Off
           type: turn_off
           device_id: cad162c8175f64ff891fc0e98b3f5fac
           entity_id: switch.smart_plug_office_christian
           domain: switch
-        - alias: Turn Office Halszka Off
-          type: turn_off
-          device_id: 84732e8f18c85a1081837adcde98f507
-          entity_id: light.hue_smart_plug_3
-          domain: light
         else:
         - if:
           - alias: Use Office Schedule
             condition: state
             entity_id: schedule.office_schedule
-            state: 'on'
+            state: 'off'
           then:
-          - alias: Turn Office Christian On
-            type: turn_on
-            device_id: cad162c8175f64ff891fc0e98b3f5fac
-            entity_id: switch.smart_plug_office_christian
-            domain: switch
-          - alias: Turn Office Halszka On
-            type: turn_on
-            device_id: 84732e8f18c85a1081837adcde98f507
-            entity_id: light.hue_smart_plug_3
-            domain: light
-          else:
           - alias: Turn Office Christian Off
             type: turn_off
             device_id: cad162c8175f64ff891fc0e98b3f5fac
             entity_id: switch.smart_plug_office_christian
             domain: switch
-          - alias: Turn Office Halszka Off
-            type: turn_off
-            device_id: 84732e8f18c85a1081837adcde98f507
-            entity_id: light.hue_smart_plug_3
-            domain: light
+          else:
+          - alias: Turn Office Christian On
+            type: turn_on
+            device_id: cad162c8175f64ff891fc0e98b3f5fac
+            entity_id: switch.smart_plug_office_christian
+            domain: switch
   mode: single
   icon: mdi:desk
 wlan_power_save:
   alias: WLAN Power Save
   sequence:
   - if:
-    - condition: or
-      conditions:
-      - condition: state
-        entity_id: schedule.wlan_schedule
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.wlan_overwrite
-        state: 'on'
+    - alias: Nobody Home
+      condition: state
+      entity_id: input_boolean.nobody_home_mode
+      state: 'on'
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
     then:
-    - service: switch.turn_on
-      data: {}
-      target:
-        entity_id:
-        - switch.fritz_box_7590_wi_fi_mat_mina_rus_ada_2_4ghz
-        - switch.fritz_box_7590_wi_fi_mat_mina_rus_ada_5ghz
-        - switch.fritz_box_7590_wi_fi_sf4_guest
+    - alias: Turn Repeater 1st Floor Off
+      type: turn_off
+      device_id: 84732e8f18c85a1081837adcde98f507
+      entity_id: light.hue_smart_plug_3
+      domain: light
     else:
-    - service: switch.turn_off
-      data: {}
-      target:
-        entity_id:
-        - switch.fritz_box_7590_wi_fi_mat_mina_rus_ada_5ghz
-        - switch.fritz_box_7590_wi_fi_mat_mina_rus_ada_2_4ghz
-        - switch.fritz_box_7590_wi_fi_sf4_guest
+    - if:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: schedule.wlan_schedule
+          state: 'on'
+        - condition: state
+          entity_id: input_boolean.wlan_overwrite
+          state: 'on'
+      then:
+      - alias: Turn Repeater 1st Floor On
+        type: turn_on
+        device_id: 84732e8f18c85a1081837adcde98f507
+        entity_id: light.hue_smart_plug_3
+        domain: light
+      else:
+      - alias: Turn Repeater 1st Floor Off
+        type: turn_off
+        device_id: 84732e8f18c85a1081837adcde98f507
+        entity_id: light.hue_smart_plug_3
+        domain: light
   mode: single
   icon: mdi:router-wireless
+tesla_charging_automation:
+  alias: 'Tesla Charging Automation '
+  sequence:
+  - if:
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: input_boolean.disable_charging_automation
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.tesla_wall_connector_vehicle_connected
+        state: 'on'
+    then:
+    - if:
+      - condition: numeric_state
+        entity_id: sensor.battery_state_of_charge
+        below: 70
+      then:
+      - type: turn_off
+        device_id: 02ce900decca3c98b3948cc45919bbe9
+        entity_id: switch.ncc_1701_d_charger
+        domain: switch
+      else:
+      - if:
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: binary_sensor.ncc_1701_d_charger
+            attribute: charging_state
+            state: Stopped
+          - condition: numeric_state
+            entity_id: sensor.battery_state_of_charge
+            above: 90
+        then:
+        - type: turn_on
+          device_id: 02ce900decca3c98b3948cc45919bbe9
+          entity_id: switch.ncc_1701_d_charger
+          domain: switch
+  mode: single
+  icon: mdi:ev-station

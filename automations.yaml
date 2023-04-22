@@ -7,6 +7,7 @@
     - schedule.livingroom_schedule
     - input_boolean.livingroom_climate_overwrite
     - input_boolean.nobody_home_mode
+    - input_boolean.heating_off
   condition: []
   action:
   - service: script.turn_on
@@ -23,6 +24,7 @@
     - schedule.bathroom_schedule
     - input_boolean.bathroom_climate_overwrite
     - input_boolean.nobody_home_mode
+    - input_boolean.heating_off
   condition: []
   action:
   - service: script.turn_on
@@ -56,10 +58,22 @@
   trigger:
   - platform: state
     entity_id:
-    - group.parents
     - input_boolean.office_overwrite
     - input_boolean.nobody_home_mode
+    - input_button.activate_office_christian
+  - platform: state
+    entity_id:
     - schedule.office_schedule
+    from: 'on'
+    to: 'off'
+  - platform: state
+    entity_id:
+    - group.parents
+    to: not_home
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
   condition: []
   action:
   - service: script.turn_on
@@ -81,4 +95,17 @@
     data: {}
     target:
       entity_id: script.wlan_power_save
+  mode: single
+- id: '1681925944850'
+  alias: Tesal Charging Automation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.battery_state_of_charge
+    - binary_sensor.ncc_1701_d_charger
+  condition: []
+  action:
+  - service: script.tesla_charging_automation
+    data: {}
   mode: single
