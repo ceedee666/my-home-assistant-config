@@ -15,6 +15,16 @@ binary_sensor:
     country: DE
     province: NW
 
+template:
+  - sensor:
+      - name: "Max Forecast Temperature in Next Day"
+        unique_id: "max_forecast_temperature_in_next_day"
+        state: "{{ state_attr('weather.forecast_home_hourly','forecast')[:] | map(attribute='temperature')|max }}"
+        state_class: measurement
+        device_class: temperature
+        unit_of_measurement: °C
+        icon: mdi:thermometer
+
 input_boolean: !include inputs.yaml
 group: !include groups.yaml
 schedule: !include schedules.yaml

@@ -109,3 +109,22 @@
   - service: script.tesla_charging_automation
     data: {}
   mode: single
+- id: '1685264181900'
+  alias: Shutters 1st Floor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.nobody_home_mode
+  - platform: time
+    at: 06:30:00
+  - platform: time
+    at: '19:00:00'
+  condition: []
+  action:
+  - service: script.turn_on
+    data: {}
+    target:
+      entity_id:
+      - script.shutters_1st_floor
+  mode: single
