@@ -10,11 +10,6 @@ tts:
   - platform: google_translate
 
 # Sensors
-binary_sensor:
-  - platform: workday
-    country: DE
-    province: NW
-
 template:
   - sensor:
       - name: "Max Forecast Temperature in Next Day"
