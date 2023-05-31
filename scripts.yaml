@@ -129,9 +129,7 @@ shutter_ground_floor:
       data: {}
       target:
         entity_id:
-        - cover.shutter_kittchen
-        - cover.shutter_left
-        - cover.shutter_right
+        - cover.shutters_ground_floor
     else:
     - if:
       - condition: state
@@ -143,17 +141,13 @@ shutter_ground_floor:
         data: {}
         target:
           entity_id:
-          - cover.shutter_kittchen
-          - cover.shutter_left
-          - cover.shutter_right
+          - cover.shutters_ground_floor
       else:
       - service: cover.open_cover
         data: {}
         target:
           entity_id:
-          - cover.shutter_kittchen
-          - cover.shutter_left
-          - cover.shutter_right
+          - cover.shutters_ground_floor
   mode: single
   icon: mdi:window-shutter-auto
 offices_power_save:
@@ -362,25 +356,98 @@ shutters_1st_floor:
         target:
           entity_id: cover.shutters_1st_floor
       else:
-      - service: cover.open_cover
+      - if:
+        - condition: or
+          conditions:
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: 'on'
+            - condition: time
+              after: 06:30:00
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: 'off'
+            - condition: time
+              after: 09:00:00
+        then:
+        - if:
+          - condition: numeric_state
+            entity_id: sensor.max_forecast_temperature_in_next_day
+            above: 25
+          then:
+          - service: cover.set_cover_position
+            data:
+              position: 45
+            target:
+              entity_id: cover.shutters_1st_floor
+          else:
+          - service: cover.open_cover
+            data: {}
+            target:
+              entity_id: cover.shutters_1st_floor
+  mode: single
+  icon: mdi:window-shutter-auto
+shutters_2nd_floor:
+  alias: Blinds 2nd Floor
+  sequence:
+  - if:
+    - alias: Nobody Home
+      condition: state
+      entity_id: input_boolean.nobody_home_mode
+      state: 'on'
+    then:
+    - service: cover.close_cover
+      data: {}
+      target:
+        entity_id: cover.blinds_2nd_floor
+    else:
+    - if:
+      - condition: state
+        entity_id: sun.sun
+        attribute: rising
+        state: false
+      then:
+      - service: cover.close_cover
         data: {}
         target:
-          entity_id:
-          - cover.shutters_1st_floor
+          entity_id: cover.blinds_2nd_floor
+      else:
       - if:
-        - condition: numeric_state
-          entity_id: sensor.max_forecast_temperature_in_next_day
-          above: 25
+        - condition: or
+          conditions:
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: 'on'
+            - condition: time
+              after: 06:30:00
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: 'off'
+            - condition: time
+              after: 09:00:00
         then:
-        - service: cover.set_cover_position
-          data:
-            position: 45
-          target:
-            entity_id: cover.shutters_1st_floor
-        else:
-        - service: cover.open_cover
-          data: {}
-          target:
-            entity_id: cover.shutters_1st_floor
+        - if:
+          - condition: numeric_state
+            entity_id: sensor.max_forecast_temperature_in_next_day
+            above: 25
+          then:
+          - service: cover.set_cover_position
+            data:
+              position: 30
+            target:
+              entity_id: cover.blinds_2nd_floor
+          else:
+          - service: cover.open_cover
+            data: {}
+            target:
+              entity_id: cover.blinds_2nd_floor
   mode: single
   icon: mdi:window-shutter-auto

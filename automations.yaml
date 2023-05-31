@@ -119,6 +119,8 @@
   - platform: time
     at: 06:30:00
   - platform: time
+    at: 09:00:00
+  - platform: time
     at: '19:00:00'
   condition: []
   action:
@@ -127,4 +129,24 @@
     target:
       entity_id:
       - script.shutters_1st_floor
+  mode: single
+- id: '1685391195611'
+  alias: Blinds 2nd Floor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.nobody_home_mode
+  - platform: time
+    at: 06:30:00
+  - platform: time
+    at: 09:00:00
+  - platform: time
+    at: '22:00:00'
+  condition: []
+  action:
+  - service: script.turn_on
+    data: {}
+    target:
+      entity_id: script.shutters_2nd_floor
   mode: single
