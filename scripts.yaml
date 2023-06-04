@@ -451,3 +451,22 @@ shutters_2nd_floor:
               entity_id: cover.blinds_2nd_floor
   mode: single
   icon: mdi:window-shutter-auto
+light_front_door:
+  alias: Light Front Door
+  sequence:
+  - if:
+    - condition: sun
+      before: sunrise
+      after: sunset
+    then:
+    - type: turn_on
+      device_id: e6c8abc9d127f425e67c65287626af59
+      entity_id: switch.light_control_front_door
+      domain: switch
+    else:
+    - type: turn_off
+      device_id: e6c8abc9d127f425e67c65287626af59
+      entity_id: switch.light_control_front_door
+      domain: switch
+  mode: single
+  icon: mdi:coach-lamp-variant
