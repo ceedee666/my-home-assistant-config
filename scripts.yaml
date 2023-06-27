@@ -147,7 +147,29 @@ shutter_ground_floor:
         data: {}
         target:
           entity_id:
-          - cover.shutters_ground_floor
+          - cover.shutters_living_room
+      - if:
+        - condition: and
+          conditions:
+          - condition: time
+            after: input_datetime.shutters_blinds_summer_setting
+          - condition: numeric_state
+            entity_id: sensor.max_forecast_temperature_in_next_day
+            above: input_number.forecast_temerature_for_hot_day
+        then:
+        - service: cover.set_cover_position
+          data:
+            position: '{{ states(''input_number.shutters_opening_hot_day'') | int
+              + 10 }}'
+          target:
+            entity_id:
+            - cover.shutter_kittchen
+        else:
+        - service: cover.open_cover
+          data: {}
+          target:
+            entity_id:
+            - cover.shutter_kittchen
   mode: single
   icon: mdi:window-shutter-auto
 offices_power_save:
@@ -159,11 +181,10 @@ offices_power_save:
       entity_id: input_boolean.nobody_home_mode
       state: 'on'
     then:
-    - alias: Turn Office Christian Off
-      type: turn_off
-      device_id: cad162c8175f64ff891fc0e98b3f5fac
-      entity_id: switch.smart_plug_office_christian
-      domain: switch
+    - type: turn_off
+      device_id: 84732e8f18c85a1081837adcde98f507
+      entity_id: light.hue_smart_plug_3
+      domain: light
     else:
     - if:
       - alias: Office Automation Overwrite
@@ -171,11 +192,10 @@ offices_power_save:
         entity_id: input_boolean.office_overwrite
         state: 'on'
       then:
-      - alias: Turn Office Christian On
-        type: turn_on
-        device_id: cad162c8175f64ff891fc0e98b3f5fac
-        entity_id: switch.smart_plug_office_christian
-        domain: switch
+      - type: turn_on
+        device_id: 84732e8f18c85a1081837adcde98f507
+        entity_id: light.hue_smart_plug_3
+        domain: light
       else:
       - if:
         - alias: Parents Away
@@ -183,11 +203,10 @@ offices_power_save:
           entity_id: group.parents
           state: not_home
         then:
-        - alias: Turn Office Christian Off
-          type: turn_off
-          device_id: cad162c8175f64ff891fc0e98b3f5fac
-          entity_id: switch.smart_plug_office_christian
-          domain: switch
+        - type: turn_off
+          device_id: 84732e8f18c85a1081837adcde98f507
+          entity_id: light.hue_smart_plug_3
+          domain: light
         else:
         - if:
           - alias: Use Office Schedule
@@ -195,17 +214,15 @@ offices_power_save:
             entity_id: schedule.office_schedule
             state: 'off'
           then:
-          - alias: Turn Office Christian Off
-            type: turn_off
-            device_id: cad162c8175f64ff891fc0e98b3f5fac
-            entity_id: switch.smart_plug_office_christian
-            domain: switch
+          - type: turn_off
+            device_id: 84732e8f18c85a1081837adcde98f507
+            entity_id: light.hue_smart_plug_3
+            domain: light
           else:
-          - alias: Turn Office Christian On
-            type: turn_on
-            device_id: cad162c8175f64ff891fc0e98b3f5fac
-            entity_id: switch.smart_plug_office_christian
-            domain: switch
+          - type: turn_on
+            device_id: 84732e8f18c85a1081837adcde98f507
+            entity_id: light.hue_smart_plug_3
+            domain: light
   mode: single
   icon: mdi:desk
 wlan_power_save:
@@ -221,11 +238,10 @@ wlan_power_save:
         minutes: 5
         seconds: 0
     then:
-    - alias: Turn Repeater 1st Floor Off
-      type: turn_off
-      device_id: 84732e8f18c85a1081837adcde98f507
-      entity_id: light.hue_smart_plug_3
-      domain: light
+    - type: turn_off
+      device_id: cad162c8175f64ff891fc0e98b3f5fac
+      entity_id: switch.smart_plug_office_christian
+      domain: switch
     else:
     - if:
       - condition: or
@@ -237,17 +253,15 @@ wlan_power_save:
           entity_id: input_boolean.wlan_overwrite
           state: 'on'
       then:
-      - alias: Turn Repeater 1st Floor On
-        type: turn_on
-        device_id: 84732e8f18c85a1081837adcde98f507
-        entity_id: light.hue_smart_plug_3
-        domain: light
+      - type: turn_on
+        device_id: cad162c8175f64ff891fc0e98b3f5fac
+        entity_id: switch.smart_plug_office_christian
+        domain: switch
       else:
-      - alias: Turn Repeater 1st Floor Off
-        type: turn_off
-        device_id: 84732e8f18c85a1081837adcde98f507
-        entity_id: light.hue_smart_plug_3
-        domain: light
+      - type: turn_off
+        device_id: cad162c8175f64ff891fc0e98b3f5fac
+        entity_id: switch.smart_plug_office_christian
+        domain: switch
   mode: single
   icon: mdi:router-wireless
 tesla_charging_automation:
@@ -268,7 +282,7 @@ tesla_charging_automation:
         conditions:
         - condition: numeric_state
           entity_id: sensor.battery_state_of_charge
-          below: 65
+          below: 50
         - condition: state
           entity_id: input_boolean.set_discharge_limit_to_low
           state: 'off'
@@ -335,120 +349,155 @@ shutters_1st_floor:
   alias: Shutters 1st Floor
   sequence:
   - if:
-    - alias: Nobody Home
+    - alias: Automation Not Disabled
       condition: state
-      entity_id: input_boolean.nobody_home_mode
-      state: 'on'
+      entity_id: input_boolean.disable_shutter_automation
+      state: 'off'
     then:
-    - service: cover.close_cover
-      data: {}
-      target:
-        entity_id: cover.shutters_1st_floor
-    else:
     - if:
-      - condition: state
-        entity_id: sun.sun
-        attribute: rising
-        state: false
+      - alias: Nobody Home
+        condition: state
+        entity_id: input_boolean.nobody_home_mode
+        state: 'on'
       then:
       - service: cover.close_cover
         data: {}
         target:
-          entity_id: cover.shutters_1st_floor
+          entity_id:
+          - cover.shutters_1st_floor_kids
       else:
       - if:
-        - condition: or
-          conditions:
-          - condition: and
-            conditions:
-            - condition: state
-              entity_id: binary_sensor.workday_sensor
-              state: 'on'
-            - condition: time
-              after: 06:30:00
-          - condition: and
-            conditions:
-            - condition: state
-              entity_id: binary_sensor.workday_sensor
-              state: 'off'
-            - condition: time
-              after: 09:00:00
+        - condition: state
+          entity_id: sun.sun
+          attribute: rising
+          state: false
         then:
+        - service: cover.close_cover
+          data: {}
+          target:
+            entity_id:
+            - cover.shutters_1st_floor_kids
+        else:
         - if:
-          - condition: numeric_state
-            entity_id: sensor.max_forecast_temperature_in_next_day
-            above: 25
+          - condition: or
+            conditions:
+            - condition: and
+              conditions:
+              - condition: state
+                entity_id: binary_sensor.workday_sensor
+                state: 'on'
+              - condition: state
+                entity_id: input_boolean.shutter_weekend_mode
+                state: 'off'
+              - condition: time
+                after: input_datetime.open_blinds_2nd_floor_weekday
+            - condition: time
+              after: input_datetime.open_blinds_2nd_floor_weekend
           then:
-          - service: cover.set_cover_position
-            data:
-              position: 45
-            target:
-              entity_id: cover.shutters_1st_floor
-          else:
-          - service: cover.open_cover
-            data: {}
-            target:
-              entity_id: cover.shutters_1st_floor
+          - if:
+            - condition: and
+              conditions:
+              - condition: time
+                after: input_datetime.shutters_blinds_summer_setting
+              - condition: numeric_state
+                entity_id: sensor.max_forecast_temperature_in_next_day
+                above: input_number.forecast_temerature_for_hot_day
+            then:
+            - service: cover.set_cover_position
+              data:
+                position: '{{ states(''input_number.shutters_opening_hot_day'') |
+                  int + 10 }}'
+              target:
+                entity_id:
+                - cover.shutters_1st_floor_kids
+            else:
+            - service: cover.open_cover
+              data: {}
+              target:
+                entity_id:
+                - cover.shutters_1st_floor_kids
   mode: single
   icon: mdi:window-shutter-auto
 shutters_2nd_floor:
   alias: Blinds 2nd Floor
   sequence:
   - if:
-    - alias: Nobody Home
+    - alias: Automation Not Disabled
       condition: state
-      entity_id: input_boolean.nobody_home_mode
-      state: 'on'
+      entity_id: input_boolean.disable_shutter_automation
+      state: 'off'
     then:
-    - service: cover.close_cover
-      data: {}
-      target:
-        entity_id: cover.blinds_2nd_floor
-    else:
     - if:
-      - condition: state
-        entity_id: sun.sun
-        attribute: rising
-        state: false
+      - alias: Nobody Home
+        condition: state
+        entity_id: input_boolean.nobody_home_mode
+        state: 'on'
       then:
       - service: cover.close_cover
         data: {}
         target:
-          entity_id: cover.blinds_2nd_floor
+          entity_id:
+          - cover.blinds_2nd_floor
+          - cover.shutters_1st_floor
       else:
       - if:
-        - condition: or
-          conditions:
-          - condition: and
-            conditions:
-            - condition: state
-              entity_id: binary_sensor.workday_sensor
-              state: 'on'
-            - condition: time
-              after: 06:30:00
-          - condition: and
-            conditions:
-            - condition: state
-              entity_id: binary_sensor.workday_sensor
-              state: 'off'
-            - condition: time
-              after: 09:00:00
+        - condition: state
+          entity_id: sun.sun
+          attribute: rising
+          state: false
         then:
+        - service: cover.close_cover
+          data: {}
+          target:
+            entity_id:
+            - cover.blinds_2nd_floor
+            - cover.shutters_1st_floor
+        else:
         - if:
-          - condition: numeric_state
-            entity_id: sensor.max_forecast_temperature_in_next_day
-            above: 25
+          - condition: or
+            conditions:
+            - condition: and
+              conditions:
+              - condition: state
+                entity_id: binary_sensor.workday_sensor
+                state: 'on'
+              - condition: state
+                entity_id: input_boolean.shutter_weekend_mode
+                state: 'off'
+              - condition: time
+                after: input_datetime.open_blinds_2nd_floor_weekday
+            - condition: time
+              after: input_datetime.open_blinds_2nd_floor_weekend
           then:
-          - service: cover.set_cover_position
-            data:
-              position: 30
-            target:
-              entity_id: cover.blinds_2nd_floor
-          else:
-          - service: cover.open_cover
-            data: {}
-            target:
-              entity_id: cover.blinds_2nd_floor
+          - if:
+            - condition: and
+              conditions:
+              - condition: time
+                after: input_datetime.shutters_blinds_summer_setting
+              - condition: numeric_state
+                entity_id: sensor.max_forecast_temperature_in_next_day
+                above: input_number.forecast_temerature_for_hot_day
+            then:
+            - service: cover.set_cover_position
+              data:
+                position: '{{ states(''input_number.shutters_opening_hot_day'') }}'
+              target:
+                entity_id:
+                - cover.blinds_2nd_floor
+            - service: cover.set_cover_position
+              data:
+                position: '{{ states(''input_number.shutters_opening_hot_day'') |
+                  int + 10 }}'
+              target:
+                entity_id:
+                - cover.shutters_1st_floor
+            else:
+            - service: cover.open_cover
+              data: {}
+              target:
+                entity_id:
+                - cover.blinds_2nd_floor
+                - cover.shutters_1st_floor
   mode: single
   icon: mdi:window-shutter-auto
 light_front_door:

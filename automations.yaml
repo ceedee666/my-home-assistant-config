@@ -45,6 +45,8 @@
   - platform: state
     entity_id:
     - input_boolean.nobody_home_mode
+  - platform: time
+    at: input_datetime.shutters_blinds_summer_setting
   condition: []
   action:
   - service: script.turn_on
@@ -117,11 +119,13 @@
     entity_id:
     - input_boolean.nobody_home_mode
   - platform: time
-    at: 06:30:00
+    at: input_datetime.open_shutters_1st_floor_weekdays
   - platform: time
-    at: 09:00:00
+    at: input_datetime.open_shutters_1st_floor_weekend
   - platform: time
-    at: '19:00:00'
+    at: input_datetime.close_shutters_1st_floor
+  - platform: time
+    at: input_datetime.shutters_blinds_summer_setting
   condition: []
   action:
   - service: script.turn_on
@@ -138,11 +142,13 @@
     entity_id:
     - input_boolean.nobody_home_mode
   - platform: time
-    at: 06:30:00
+    at: input_datetime.open_blinds_2nd_floor_weekday
   - platform: time
-    at: 09:00:00
+    at: input_datetime.open_blinds_2nd_floor_weekend
   - platform: time
-    at: '22:00:00'
+    at: input_datetime.close_blinds_2nd_floor
+  - platform: time
+    at: input_datetime.shutters_blinds_summer_setting
   condition: []
   action:
   - service: script.turn_on
@@ -155,9 +161,98 @@
   description: ''
   trigger:
   - platform: time_pattern
-    minutes: '15'
+    minutes: /15
+  - platform: time_pattern
+    minutes: '0'
   condition: []
   action:
   - service: script.light_front_door
     data: {}
+  mode: single
+- id: '1686891084836'
+  alias: Set Shutters For Hot Day
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.trigger_hot_day_setting
+  condition: []
+  action:
+  - service: cover.set_cover_position
+    data:
+      position: '{{ states(''input_number.shutters_opening_hot_day'') }}'
+    target:
+      entity_id:
+      - cover.blinds_2nd_floor
+  - service: cover.set_cover_position
+    data:
+      position: '{{ states(''input_number.shutters_opening_hot_day'') | int +10 }}'
+    target:
+      entity_id:
+      - cover.shutters_1st_floor_all
+      - cover.shutter_kittchen
+  mode: single
+- id: '1687754992255'
+  alias: Reset Weekend Mode for Shutters
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.shutter_weekend_mode
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 12
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.shutter_weekend_mode
+  mode: single
+- id: '1687755146877'
+  alias: Reset Tesla Charging Overwrites
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.disable_charging_automation
+    - input_boolean.set_discharge_limit_to_low
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 12
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id:
+      - input_boolean.disable_charging_automation
+      - input_boolean.set_discharge_limit_to_low
+  mode: single
+- id: '1687755335045'
+  alias: Reset WLAN and Office Overwrites
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.wlan_overwrite
+    - input_boolean.office_overwrite
+    for:
+      hours: 12
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id:
+      - input_boolean.wlan_overwrite
+      - input_boolean.office_overwrite
   mode: single
