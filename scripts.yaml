@@ -508,14 +508,24 @@ light_front_door:
       before: sunrise
       after: sunset
     then:
-    - type: turn_on
-      device_id: e6c8abc9d127f425e67c65287626af59
-      entity_id: switch.light_control_front_door
-      domain: switch
+    - if:
+      - condition: state
+        entity_id: switch.light_control_front_door
+        state: 'off'
+      then:
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.light_control_front_door
     else:
-    - type: turn_off
-      device_id: e6c8abc9d127f425e67c65287626af59
-      entity_id: switch.light_control_front_door
-      domain: switch
+    - if:
+      - condition: state
+        entity_id: switch.light_control_front_door
+        state: 'on'
+      then:
+      - service: switch.turn_off
+        data: {}
+        target:
+          entity_id: switch.light_control_front_door
   mode: single
   icon: mdi:coach-lamp-variant

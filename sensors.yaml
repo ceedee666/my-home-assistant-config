@@ -1,0 +1,111 @@
+# Sensors
+- sensor:
+    - name: "Max Forecast Temperature in Next Day"
+      unique_id: "max_forecast_temperature_in_next_day"
+      state: "{{ state_attr('weather.forecast_home_hourly','forecast')[:] | map(attribute='temperature')|max }}"
+      state_class: measurement
+      device_class: temperature
+      unit_of_measurement: °C
+      icon: mdi:thermometer
+
+- trigger:
+    platform: time_pattern
+    minutes: "/30"
+  sensor:
+    - name: Smart Display Data
+      state: "OK"
+      attributes:
+        weather_condition_now: >
+          {{ states('weather.forecast_home') }}
+        weather_temperature_now: >
+          {{ state_attr('weather.forecast_home', 'temperature') }}
+        weather_timestamp_0: >
+          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[0].datetime) | timestamp_custom('%a %d.%m.')}}
+        weather_condition_0: >
+          {{ state_attr('weather.forecast_home', 'forecast')[0].condition }}
+        weather_temperature_0: >
+          {{ state_attr('weather.forecast_home', 'forecast')[0].temperature }}
+        weather_precipitation_0: >
+          {{ state_attr('weather.forecast_home', 'forecast')[0].precipitation }}
+        weather_timestamp_1: >
+          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[1].datetime) | timestamp_custom('%a %d.%m.')}}
+        weather_condition_1: >
+          {{ state_attr('weather.forecast_home', 'forecast')[1].condition }}
+        weather_temperature_1: >
+          {{ state_attr('weather.forecast_home', 'forecast')[1].temperature }}
+        weather_precipitation_1: >
+          {{ state_attr('weather.forecast_home', 'forecast')[1].precipitation }}
+        weather_timestamp_2: >
+          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[2].datetime) | timestamp_custom('%a %d.%m.') }}
+        weather_condition_2: >
+          {{ state_attr('weather.forecast_home', 'forecast')[2].condition }}
+        weather_temperature_2: >
+          {{ state_attr('weather.forecast_home', 'forecast')[2].temperature }}
+        weather_precipitation_2: >
+          {{ state_attr('weather.forecast_home', 'forecast')[2].precipitation }}
+        weather_timestamp_3: >
+          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[3].datetime) | timestamp_custom('%a %d.%m.') }}
+        weather_condition_3: >
+          {{ state_attr('weather.forecast_home', 'forecast')[3].condition }}
+        weather_temperature_3: >
+          {{ state_attr('weather.forecast_home', 'forecast')[3].temperature }}
+        weather_precipitation_3: >
+          {{ state_attr('weather.forecast_home', 'forecast')[3].precipitation }}
+        weather_timestamp_4: >
+          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[4].datetime) }}
+        weather_condition_4: >
+          {{ state_attr('weather.forecast_home', 'forecast')[4].condition }}
+        weather_temperature_4: >
+          {{ state_attr('weather.forecast_home', 'forecast')[4].temperature }}
+        weather_precipitation_4: >
+          {{ state_attr('weather.forecast_home', 'forecast')[4].precipitation }}
+
+        calendar_event_0: >
+          {{ state_attr('sensor.ical_family_calendar_event_0', 'summary') }}
+        calendar_event_0_start: >
+          {% set all_day_0 =  state_attr('sensor.ical_family_calendar_event_0', 'all_day') %}
+          {% if all_day_0 == true: %}
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_0', 'start')) | timestamp_custom('%d.%m.') }}
+          {% else %}
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_0', 'start')) | timestamp_custom('%d.%m. %H:%M') }}
+          {% endif %}
+
+        calendar_event_1: >
+          {{ state_attr('sensor.ical_family_calendar_event_1', 'summary') }}
+        calendar_event_1_start: >
+          {% set all_day_1 =  state_attr('sensor.ical_family_calendar_event_1', 'all_day') %}
+          {% if all_day_1 == true: %}
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_1', 'start')) | timestamp_custom('%d.%m.') }}
+          {% else %}
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_1', 'start')) | timestamp_custom('%d.%m. %H:%M') }}
+          {% endif %}
+
+        calendar_event_2: >
+          {{ state_attr('sensor.ical_family_calendar_event_2', 'summary') }}
+        calendar_event_2_start: >
+          {% set all_day_2 =  state_attr('sensor.ical_family_calendar_event_2', 'all_day') %}
+          {% if all_day_2 == true: %} 
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_2', 'start')) | timestamp_custom('%d.%m.') }}
+          {% else %}
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_2', 'start')) | timestamp_custom('%d.%m. %H:%M') }}
+          {% endif %}
+
+        calendar_event_3: >
+          {{ state_attr('sensor.ical_family_calendar_event_3', 'summary') }}
+        calendar_event_3_start: >
+          {% set all_day_3 =  state_attr('sensor.ical_family_calendar_event_3', 'all_day') %}
+          {% if all_day_3 == true: %}
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_3', 'start')) | timestamp_custom('%d.%m.') }}
+          {% else %}
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_3', 'start')) | timestamp_custom('%d.%m. %H:%M') }}
+          {% endif %}
+
+        calendar_event_4: >
+          {{ state_attr('sensor.ical_family_calendar_event_4', 'summary') }}
+        calendar_event_4_start: >
+          {% set all_day_4 =  state_attr('sensor.ical_family_calendar_event_4', 'all_day') %}
+          {% if all_day_4 == true: %} 
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_4', 'start')) | timestamp_custom('%d.%m.') }}
+          {% else %}
+              {{ as_timestamp(state_attr('sensor.ical_family_calendar_event_4', 'start')) | timestamp_custom('%d.%m. %H:%M') }}
+          {% endif %}
