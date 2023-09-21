@@ -1,0 +1,44 @@
+- id: '1694111182331'
+  name: Blinds 2nd Floor Hot Day
+  entities:
+    cover.blinds_2nd_floor:
+      device_class: blind
+      friendly_name: Blinds 2nd Floor
+      supported_features: 191
+      current_position: 30
+      current_tilt_position: 0
+      entity_id:
+      - cover.shutter_office_christian
+      - cover.blinds_bathroom_2nd_floor
+      state: open
+  icon: mdi:blinds-horizontal
+  metadata:
+    cover.blinds_2nd_floor:
+      entity_only: true
+- id: '1694111573135'
+  name: Shutters 1st Floor Hot Day
+  entities:
+    cover.shutters_1st_floor_all:
+      current_position: 40
+      entity_id:
+      - cover.shutters_1st_floor
+      - cover.shutters_1st_floor_kids
+      device_class: shutter
+      friendly_name: Shutters 1st Floor All
+      supported_features: 15
+      state: open
+  icon: mdi:window-shutter-alert
+  metadata:
+    cover.shutters_1st_floor_all:
+      entity_only: true
+- id: '1694112110450'
+  name: Shutters Ground Floor Hot Day
+  entities:
+    cover.shutter_kittchen:
+      current_position: 40
+      device_class: shutter
+      friendly_name: Shutters Kittchen
+      supported_features: 15
+      state: open
+  icon: mdi:window-shutter-alert
+  metadata: {}

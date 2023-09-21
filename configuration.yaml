@@ -19,7 +19,6 @@ http:
 tts:
   - platform: google_translate
 
-# Sensors
 template: !include sensors.yaml
 input_boolean: !include inputs.yaml
 group: !include groups.yaml

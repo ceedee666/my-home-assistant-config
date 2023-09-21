@@ -119,9 +119,9 @@
     entity_id:
     - input_boolean.nobody_home_mode
   - platform: time
-    at: input_datetime.open_shutters_1st_floor_weekdays
+    at: input_datetime.open_1st_and_2nd_floor_weekdays
   - platform: time
-    at: input_datetime.open_shutters_1st_floor_weekend
+    at: input_datetime.open_1st_and_2nd_floor_weekend
   - platform: time
     at: input_datetime.close_shutters_1st_floor
   - platform: time
@@ -142,9 +142,9 @@
     entity_id:
     - input_boolean.nobody_home_mode
   - platform: time
-    at: input_datetime.open_blinds_2nd_floor_weekday
+    at: input_datetime.open_1st_and_2nd_floor_weekdays
   - platform: time
-    at: input_datetime.open_blinds_2nd_floor_weekend
+    at: input_datetime.open_1st_and_2nd_floor_weekend
   - platform: time
     at: input_datetime.close_blinds_2nd_floor
   - platform: time
@@ -157,17 +157,18 @@
       entity_id: script.shutters_2nd_floor
   mode: single
 - id: '1685870854957'
-  alias: Front Door Light Automation
+  alias: Front Door Light Switch - Turn on after sunset
   description: ''
   trigger:
-  - platform: time_pattern
-    minutes: /15
-  - platform: time_pattern
-    minutes: '0'
+  - platform: sun
+    event: sunset
+    offset: 0
   condition: []
   action:
-  - service: script.light_front_door
+  - service: switch.turn_on
     data: {}
+    target:
+      entity_id: switch.light_control_front_door
   mode: single
 - id: '1686891084836'
   alias: Set Shutters For Hot Day
@@ -178,19 +179,13 @@
     - input_button.trigger_hot_day_setting
   condition: []
   action:
-  - service: cover.set_cover_position
-    data:
-      position: '{{ states(''input_number.shutters_opening_hot_day'') }}'
+  - service: scene.turn_on
+    data: {}
     target:
       entity_id:
-      - cover.blinds_2nd_floor
-  - service: cover.set_cover_position
-    data:
-      position: '{{ states(''input_number.shutters_opening_hot_day'') | int +10 }}'
-    target:
-      entity_id:
-      - cover.shutters_1st_floor_all
-      - cover.shutter_kittchen
+      - scene.blinds_2nd_floor_hot_day
+      - scene.blinds_1st_floor_hot_day
+      - scene.blinds_ground_floor_hot_day
   mode: single
 - id: '1687754992255'
   alias: Reset Weekend Mode for Shutters
@@ -255,4 +250,18 @@
       entity_id:
       - input_boolean.wlan_overwrite
       - input_boolean.office_overwrite
+  mode: single
+- id: '1694605756593'
+  alias: Front Door Light Switch - Turn off after sunrise
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.light_control_front_door
   mode: single

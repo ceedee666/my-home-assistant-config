@@ -157,13 +157,10 @@ shutter_ground_floor:
             entity_id: sensor.max_forecast_temperature_in_next_day
             above: input_number.forecast_temerature_for_hot_day
         then:
-        - service: cover.set_cover_position
-          data:
-            position: '{{ states(''input_number.shutters_opening_hot_day'') | int
-              + 10 }}'
+        - service: scene.turn_on
+          data: {}
           target:
-            entity_id:
-            - cover.shutter_kittchen
+            entity_id: scene.blinds_ground_floor_hot_day
         else:
         - service: cover.open_cover
           data: {}
@@ -346,7 +343,7 @@ tesla_charging_automation:
   mode: single
   icon: mdi:ev-station
 shutters_1st_floor:
-  alias: Shutters 1st Floor
+  alias: Shutters 1st Floor Kids
   sequence:
   - if:
     - alias: Automation Not Disabled
@@ -390,9 +387,9 @@ shutters_1st_floor:
                 entity_id: input_boolean.shutter_weekend_mode
                 state: 'off'
               - condition: time
-                after: input_datetime.open_blinds_2nd_floor_weekday
+                after: input_datetime.open_1st_and_2nd_floor_weekdays
             - condition: time
-              after: input_datetime.open_blinds_2nd_floor_weekend
+              after: input_datetime.open_1st_and_2nd_floor_weekend
           then:
           - if:
             - condition: and
@@ -403,13 +400,10 @@ shutters_1st_floor:
                 entity_id: sensor.max_forecast_temperature_in_next_day
                 above: input_number.forecast_temerature_for_hot_day
             then:
-            - service: cover.set_cover_position
-              data:
-                position: '{{ states(''input_number.shutters_opening_hot_day'') |
-                  int + 10 }}'
+            - service: scene.turn_on
+              data: {}
               target:
-                entity_id:
-                - cover.shutters_1st_floor_kids
+                entity_id: scene.blinds_1st_floor_hot_day
             else:
             - service: cover.open_cover
               data: {}
@@ -419,7 +413,7 @@ shutters_1st_floor:
   mode: single
   icon: mdi:window-shutter-auto
 shutters_2nd_floor:
-  alias: Blinds 2nd Floor
+  alias: Blinds 2nd Floor and Shutters 1st Floor
   sequence:
   - if:
     - alias: Automation Not Disabled
@@ -465,9 +459,9 @@ shutters_2nd_floor:
                 entity_id: input_boolean.shutter_weekend_mode
                 state: 'off'
               - condition: time
-                after: input_datetime.open_blinds_2nd_floor_weekday
+                after: input_datetime.open_1st_and_2nd_floor_weekdays
             - condition: time
-              after: input_datetime.open_blinds_2nd_floor_weekend
+              after: input_datetime.open_1st_and_2nd_floor_weekend
           then:
           - if:
             - condition: and
@@ -478,19 +472,10 @@ shutters_2nd_floor:
                 entity_id: sensor.max_forecast_temperature_in_next_day
                 above: input_number.forecast_temerature_for_hot_day
             then:
-            - service: cover.set_cover_position
-              data:
-                position: '{{ states(''input_number.shutters_opening_hot_day'') }}'
+            - service: scene.turn_on
+              data: {}
               target:
-                entity_id:
-                - cover.blinds_2nd_floor
-            - service: cover.set_cover_position
-              data:
-                position: '{{ states(''input_number.shutters_opening_hot_day'') |
-                  int + 10 }}'
-              target:
-                entity_id:
-                - cover.shutters_1st_floor
+                entity_id: scene.blinds_2nd_floor_hot_day
             else:
             - service: cover.open_cover
               data: {}
@@ -500,32 +485,3 @@ shutters_2nd_floor:
                 - cover.shutters_1st_floor
   mode: single
   icon: mdi:window-shutter-auto
-light_front_door:
-  alias: Light Front Door
-  sequence:
-  - if:
-    - condition: sun
-      before: sunrise
-      after: sunset
-    then:
-    - if:
-      - condition: state
-        entity_id: switch.light_control_front_door
-        state: 'off'
-      then:
-      - service: switch.turn_on
-        data: {}
-        target:
-          entity_id: switch.light_control_front_door
-    else:
-    - if:
-      - condition: state
-        entity_id: switch.light_control_front_door
-        state: 'on'
-      then:
-      - service: switch.turn_off
-        data: {}
-        target:
-          entity_id: switch.light_control_front_door
-  mode: single
-  icon: mdi:coach-lamp-variant
