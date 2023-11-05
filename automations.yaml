@@ -4,7 +4,7 @@
   trigger:
   - platform: state
     entity_id:
-    - schedule.livingroom_schedule
+    - schedule.schedule_livingroom
     - input_boolean.livingroom_climate_overwrite
     - input_boolean.nobody_home_mode
     - input_boolean.heating_off
@@ -21,7 +21,7 @@
   trigger:
   - platform: state
     entity_id:
-    - schedule.bathroom_schedule
+    - schedule.schedule_bathroom_1st_floor
     - input_boolean.bathroom_climate_overwrite
     - input_boolean.nobody_home_mode
     - input_boolean.heating_off
@@ -65,7 +65,7 @@
     - input_button.activate_office_christian
   - platform: state
     entity_id:
-    - schedule.office_schedule
+    - schedule.schedule_office_christian
     from: 'on'
     to: 'off'
   - platform: state
@@ -90,7 +90,7 @@
   - platform: state
     entity_id:
     - input_boolean.office_overwrite
-    - schedule.wlan_schedule
+    - schedule.schedule_wlan
   condition: []
   action:
   - service: script.turn_on
@@ -149,6 +149,9 @@
     at: input_datetime.close_blinds_2nd_floor
   - platform: time
     at: input_datetime.shutters_blinds_summer_setting
+  - platform: sun
+    event: sunset
+    offset: 00:30:00
   condition: []
   action:
   - service: script.turn_on
@@ -168,7 +171,7 @@
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.light_control_front_door
+      device_id: e6c8abc9d127f425e67c65287626af59
   mode: single
 - id: '1686891084836'
   alias: Set Shutters For Hot Day
@@ -264,4 +267,29 @@
     data: {}
     target:
       entity_id: switch.light_control_front_door
+  mode: single
+- id: '1698833479067'
+  alias: Waste Reminder
+  description: ''
+  trigger:
+  - platform: calendar
+    event: start
+    offset: '-6:0:0'
+    entity_id: calendar.ics
+  condition: []
+  action:
+  - service: notify.mobile_app_christians_iphone_13
+    data:
+      title: "\U0001F5D1 Mülltonnen raus stellen!"
+      message: 'Folgende Mülltonnen werden morgen abgeholt: {{ states(''sensor.waste_calendar'')
+        }}
+
+        '
+  - service: notify.mobile_app_halszka_s_iphone
+    data:
+      title: "\U0001F5D1 Mülltonnen raus stellen!"
+      message: 'Folgende Mülltonnen werden morgen abgeholt: {{ states(''sensor.waste_calendar'')
+        }}
+
+        '
   mode: single

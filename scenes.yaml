@@ -42,3 +42,22 @@
       state: open
   icon: mdi:window-shutter-alert
   metadata: {}
+- id: '1696828213380'
+  name: Blinds Second Floor Morning
+  entities:
+    cover.blinds_bathroom_2nd_floor:
+      current_position: 1
+      current_tilt_position: 88
+      device_class: blind
+      friendly_name: Blinds Bathroom 2nd Floor
+      supported_features: 255
+      state: open
+    cover.shutter_office_christian:
+      current_position: 0
+      current_tilt_position: 75
+      device_class: blind
+      friendly_name: Blinds Office Christian
+      supported_features: 255
+      state: closed
+  icon: mdi:blinds-horizontal
+  metadata: {}

@@ -38,7 +38,7 @@ set_livingroom_temperature:
       - if:
         - alias: Use Schedule
           condition: state
-          entity_id: schedule.livingroom_schedule
+          entity_id: schedule.schedule_livingroom
           state: 'on'
         then:
         - alias: Turn heating on
@@ -97,7 +97,7 @@ set_bathroom_temperature:
       - if:
         - alias: Use Schedule
           condition: state
-          entity_id: schedule.bathroom_schedule
+          entity_id: schedule.schedule_bathroom_1st_floor
           state: 'on'
         then:
         - alias: Turn heating on
@@ -179,9 +179,9 @@ offices_power_save:
       state: 'on'
     then:
     - type: turn_off
-      device_id: 84732e8f18c85a1081837adcde98f507
-      entity_id: light.hue_smart_plug_3
-      domain: light
+      device_id: dd2d583e4120448ce7809ccd2c7ec121
+      entity_id: e3081975aec220e80f140f198173a1fc
+      domain: switch
     else:
     - if:
       - alias: Office Automation Overwrite
@@ -190,9 +190,9 @@ offices_power_save:
         state: 'on'
       then:
       - type: turn_on
-        device_id: 84732e8f18c85a1081837adcde98f507
-        entity_id: light.hue_smart_plug_3
-        domain: light
+        device_id: dd2d583e4120448ce7809ccd2c7ec121
+        entity_id: e3081975aec220e80f140f198173a1fc
+        domain: switch
       else:
       - if:
         - alias: Parents Away
@@ -201,25 +201,25 @@ offices_power_save:
           state: not_home
         then:
         - type: turn_off
-          device_id: 84732e8f18c85a1081837adcde98f507
-          entity_id: light.hue_smart_plug_3
-          domain: light
+          device_id: dd2d583e4120448ce7809ccd2c7ec121
+          entity_id: e3081975aec220e80f140f198173a1fc
+          domain: switch
         else:
         - if:
           - alias: Use Office Schedule
             condition: state
-            entity_id: schedule.office_schedule
+            entity_id: schedule.schedule_office_christian
             state: 'off'
           then:
           - type: turn_off
-            device_id: 84732e8f18c85a1081837adcde98f507
-            entity_id: light.hue_smart_plug_3
-            domain: light
+            device_id: dd2d583e4120448ce7809ccd2c7ec121
+            entity_id: e3081975aec220e80f140f198173a1fc
+            domain: switch
           else:
           - type: turn_on
-            device_id: 84732e8f18c85a1081837adcde98f507
-            entity_id: light.hue_smart_plug_3
-            domain: light
+            device_id: dd2d583e4120448ce7809ccd2c7ec121
+            entity_id: e3081975aec220e80f140f198173a1fc
+            domain: switch
   mode: single
   icon: mdi:desk
 wlan_power_save:
@@ -237,14 +237,14 @@ wlan_power_save:
     then:
     - type: turn_off
       device_id: cad162c8175f64ff891fc0e98b3f5fac
-      entity_id: switch.smart_plug_office_christian
+      entity_id: 7902629467741c65285bd80a80bfbc00
       domain: switch
     else:
     - if:
       - condition: or
         conditions:
         - condition: state
-          entity_id: schedule.wlan_schedule
+          entity_id: schedule.schedule_wlan
           state: 'on'
         - condition: state
           entity_id: input_boolean.wlan_overwrite
@@ -252,12 +252,12 @@ wlan_power_save:
       then:
       - type: turn_on
         device_id: cad162c8175f64ff891fc0e98b3f5fac
-        entity_id: switch.smart_plug_office_christian
+        entity_id: 7902629467741c65285bd80a80bfbc00
         domain: switch
       else:
       - type: turn_off
         device_id: cad162c8175f64ff891fc0e98b3f5fac
-        entity_id: switch.smart_plug_office_christian
+        entity_id: 7902629467741c65285bd80a80bfbc00
         domain: switch
   mode: single
   icon: mdi:router-wireless
