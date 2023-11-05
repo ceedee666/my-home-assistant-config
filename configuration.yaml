@@ -19,10 +19,11 @@ http:
 tts:
   - platform: google_translate
 
-template: !include sensors.yaml
-input_boolean: !include inputs.yaml
-group: !include groups.yaml
-schedule: !include schedules.yaml
 automation: !include automations.yaml
+group: !include groups.yaml
+input_boolean: !include inputs.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+sensor: !include sensor.yaml
+template: !include template_sensors.yaml
+waste_collection_schedule: !include waste_schedule.yaml
