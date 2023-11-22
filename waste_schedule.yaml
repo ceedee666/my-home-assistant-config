@@ -1,4 +1,7 @@
 sources:
-  - name: ics
+  - name: abfallnavi_de
     args:
-      url: https://abfallkalender.regioit.de/kalender-aachen/downloadfile.jsp?format=ics&jahr=2023&ort=Aachen&strasse=10484681&hnr=10484772&fraktion=0&fraktion=1&fraktion=4&fraktion=11
+      service: aachen
+      ort: Aachen
+      strasse: Schönauer Friede
+      hausnummer: 4

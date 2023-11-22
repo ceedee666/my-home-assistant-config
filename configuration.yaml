@@ -20,10 +20,12 @@ tts:
   - platform: google_translate
 
 automation: !include automations.yaml
+climate: !include generic_thermostats.yaml
 group: !include groups.yaml
 input_boolean: !include inputs.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 sensor: !include sensor.yaml
+switch: !include switches.yaml
 template: !include template_sensors.yaml
 waste_collection_schedule: !include waste_schedule.yaml

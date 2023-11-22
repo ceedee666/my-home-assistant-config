@@ -126,6 +126,9 @@
     at: input_datetime.close_shutters_1st_floor
   - platform: time
     at: input_datetime.shutters_blinds_summer_setting
+  - platform: sun
+    event: sunset
+    offset: 00:30:00
   condition: []
   action:
   - service: script.turn_on
@@ -275,7 +278,7 @@
   - platform: calendar
     event: start
     offset: '-6:0:0'
-    entity_id: calendar.ics
+    entity_id: calendar.abfallnavi_regioit_de
   condition: []
   action:
   - service: notify.mobile_app_christians_iphone_13

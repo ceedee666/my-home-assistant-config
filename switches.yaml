@@ -1,0 +1,43 @@
+- platform: template
+  switches:
+    bathroom_1st_floor_trv:
+      value_template: "{{ is_state('climate.room_climate_bathroom', 'heat') }}"
+      turn_on:
+        service: climate.set_temperature
+        data:
+          hvac_mode: "heat"
+          temperature: 24
+        target:
+          entity_id: climate.room_climate_bathroom
+      turn_off:
+        service: climate.set_temperature
+        data:
+          temperature: 5
+        target:
+          entity_id: climate.room_climate_bathroom
+        service: climate.set_hvac_mode
+        data:
+          hvac_mode: "off"
+        target:
+          entity_id: climate.room_climate_bathroom
+
+    livingroom_trv:
+      value_template: "{{ is_state('climate.room_climate_living_room', 'heat') }}"
+      turn_on:
+        service: climate.set_temperature
+        data:
+          hvac_mode: "heat"
+          temperature: 24
+        target:
+          entity_id: climate.room_climate_living_room
+      turn_off:
+        service: climate.set_temperature
+        data:
+          temperature: 5
+        target:
+          entity_id: climate.room_climate_living_room
+        service: climate.set_hvac_mode
+        data:
+          hvac_mode: "off"
+        target:
+          entity_id: climate.room_climate_living_room

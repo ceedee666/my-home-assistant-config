@@ -1,0 +1,11 @@
+- platform: generic_thermostat
+  name: Thermostat Bathroom 1st Floor
+  unique_id: generic_thermostat.bathroom_1st_floor
+  heater: switch.bathroom_1st_floor_trv
+  target_sensor: sensor.thermostate_bathroom_1st_floor_temperature
+
+- platform: generic_thermostat
+  name: Thermostat Living Room
+  unique_id: generic_thermostat.living_room
+  heater: switch.livingroom_trv
+  target_sensor: sensor.thermostate_livingroom_temperature
