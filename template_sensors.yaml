@@ -1,18 +1,60 @@
 # Sensors
-- sensor:
+- trigger:
+    - platform: state
+      entity_id: weather.forecast_home
+    - platform: time_pattern
+      minutes: "/30"
+  action:
+    - service: weather.get_forecasts
+      target:
+        entity_id: weather.forecast_home
+      data:
+        type: daily
+      response_variable: daily
+  sensor:
+    - name: Weather Forecast Home Daily
+      unique_id: weather_forecast_home_daily
+      state: "{{ now().isoformat() }}"
+      attributes:
+        forecast: "{{ daily['weather.forecast_home'].forecast }}"
+
+- trigger:
+    - platform: state
+      entity_id: weather.forecast_home
+    - platform: time_pattern
+      minutes: "/30"
+  action:
+    - service: weather.get_forecasts
+      target:
+        entity_id: weather.forecast_home
+      data:
+        type: hourly
+      response_variable: hourly
+  sensor:
+    - name: Weather Forecast Home Hourly
+      unique_id: weather_forecast_home_hourly
+      state: "{{ now().isoformat() }}"
+      attributes:
+        forecast: "{{ hourly['weather.forecast_home'].forecast }}"
+
+- trigger:
+    - platform: state
+      entity_id: sensor.weather_forecast_home_hourly
+  sensor:
     - name: "Max Forecast Temperature in Next Day"
       unique_id: "max_forecast_temperature_in_next_day"
-      state: "{{ state_attr('weather.forecast_home_hourly','forecast')[:] | map(attribute='temperature')|max }}"
+      state: "{{ state_attr('sensor.weather_forecast_home_hourly','forecast')[:] | map(attribute='temperature') | max }}"
       state_class: measurement
       device_class: temperature
       unit_of_measurement: °C
       icon: mdi:thermometer
 
 - trigger:
-    platform: time_pattern
-    minutes: "/30"
+    - platform: state
+      entity_id: sensor.weather_forecast_home_daily
   sensor:
     - name: Smart Display Data
+      unique_id: "smart_display_data"
       state: "OK"
       attributes:
         weather_condition_now: >
@@ -20,45 +62,45 @@
         weather_temperature_now: >
           {{ state_attr('weather.forecast_home', 'temperature') }}
         weather_timestamp_0: >
-          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[0].datetime) | timestamp_custom('%a %d.%m.')}}
+          {{ as_timestamp(state_attr('sensor.weather_forecast_home_daily', 'forecast')[0].datetime) | timestamp_custom('%a %d.%m.')}}
         weather_condition_0: >
-          {{ state_attr('weather.forecast_home', 'forecast')[0].condition }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[0].condition }}
         weather_temperature_0: >
-          {{ state_attr('weather.forecast_home', 'forecast')[0].temperature }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[0].temperature }}
         weather_precipitation_0: >
-          {{ state_attr('weather.forecast_home', 'forecast')[0].precipitation }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[0].precipitation }}
         weather_timestamp_1: >
-          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[1].datetime) | timestamp_custom('%a %d.%m.')}}
+          {{ as_timestamp(state_attr('sensor.weather_forecast_home_daily', 'forecast')[1].datetime) | timestamp_custom('%a %d.%m.')}}
         weather_condition_1: >
-          {{ state_attr('weather.forecast_home', 'forecast')[1].condition }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[1].condition }}
         weather_temperature_1: >
-          {{ state_attr('weather.forecast_home', 'forecast')[1].temperature }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[1].temperature }}
         weather_precipitation_1: >
-          {{ state_attr('weather.forecast_home', 'forecast')[1].precipitation }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[1].precipitation }}
         weather_timestamp_2: >
-          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[2].datetime) | timestamp_custom('%a %d.%m.') }}
+          {{ as_timestamp(state_attr('sensor.weather_forecast_home_daily', 'forecast')[2].datetime) | timestamp_custom('%a %d.%m.') }}
         weather_condition_2: >
-          {{ state_attr('weather.forecast_home', 'forecast')[2].condition }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[2].condition }}
         weather_temperature_2: >
-          {{ state_attr('weather.forecast_home', 'forecast')[2].temperature }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[2].temperature }}
         weather_precipitation_2: >
-          {{ state_attr('weather.forecast_home', 'forecast')[2].precipitation }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[2].precipitation }}
         weather_timestamp_3: >
-          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[3].datetime) | timestamp_custom('%a %d.%m.') }}
+          {{ as_timestamp(state_attr('sensor.weather_forecast_home_daily', 'forecast')[3].datetime) | timestamp_custom('%a %d.%m.') }}
         weather_condition_3: >
-          {{ state_attr('weather.forecast_home', 'forecast')[3].condition }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[3].condition }}
         weather_temperature_3: >
-          {{ state_attr('weather.forecast_home', 'forecast')[3].temperature }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[3].temperature }}
         weather_precipitation_3: >
-          {{ state_attr('weather.forecast_home', 'forecast')[3].precipitation }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[3].precipitation }}
         weather_timestamp_4: >
-          {{ as_timestamp(state_attr('weather.forecast_home', 'forecast')[4].datetime) }}
+          {{ as_timestamp(state_attr('sensor.weather_forecast_home_daily', 'forecast')[4].datetime) }}
         weather_condition_4: >
-          {{ state_attr('weather.forecast_home', 'forecast')[4].condition }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[4].condition }}
         weather_temperature_4: >
-          {{ state_attr('weather.forecast_home', 'forecast')[4].temperature }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[4].temperature }}
         weather_precipitation_4: >
-          {{ state_attr('weather.forecast_home', 'forecast')[4].precipitation }}
+          {{ state_attr('sensor.weather_forecast_home_daily', 'forecast')[4].precipitation }}
 
         calendar_event_0: >
           {{ state_attr('sensor.ical_family_calendar_event_0', 'summary') }}

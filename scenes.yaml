@@ -45,19 +45,25 @@
 - id: '1696828213380'
   name: Blinds Second Floor Morning
   entities:
-    cover.blinds_bathroom_2nd_floor:
-      current_position: 1
-      current_tilt_position: 88
-      device_class: blind
-      friendly_name: Blinds Bathroom 2nd Floor
-      supported_features: 255
-      state: open
-    cover.shutter_office_christian:
+    cover.blinds_2nd_floor:
       current_position: 0
-      current_tilt_position: 75
+      current_tilt_position: 51
+      entity_id:
+      - cover.shutter_office_christian
+      - cover.blinds_bathroom_2nd_floor
       device_class: blind
-      friendly_name: Blinds Office Christian
+      friendly_name: Blinds 2nd Floor
       supported_features: 255
       state: closed
   icon: mdi:blinds-horizontal
+  metadata:
+    cover.blinds_2nd_floor:
+      entity_only: true
+- id: '1710666452104'
+  name: Office Christian Active
+  entities:
+    switch.office_christian:
+      friendly_name: Office Christian
+      state: 'on'
+  icon: mdi:desk
   metadata: {}
