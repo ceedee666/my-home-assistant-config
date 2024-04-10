@@ -288,7 +288,7 @@ wlan_power_save:
   mode: single
   icon: mdi:router-wireless
 tesla_charging_automation:
-  alias: 'Tesla Charging Automation '
+  alias: Tesla Charging Automation
   sequence:
   - if:
     - condition: and
@@ -378,10 +378,10 @@ shutters_1st_floor:
       state: 'off'
     then:
     - if:
-      - alias: Nobody Home
-        condition: state
-        entity_id: input_boolean.nobody_home_mode
-        state: 'on'
+      - condition: state
+        entity_id: sun.sun
+        attribute: rising
+        state: false
       then:
       - service: cover.close_cover
         data: {}
@@ -390,52 +390,40 @@ shutters_1st_floor:
           - cover.shutters_1st_floor_kids
       else:
       - if:
-        - condition: state
-          entity_id: sun.sun
-          attribute: rising
-          state: false
-        then:
-        - service: cover.close_cover
-          data: {}
-          target:
-            entity_id:
-            - cover.shutters_1st_floor_kids
-        else:
-        - if:
-          - condition: or
+        - condition: or
+          conditions:
+          - condition: and
             conditions:
-            - condition: and
-              conditions:
-              - condition: state
-                entity_id: binary_sensor.workday_sensor
-                state: 'on'
-              - condition: state
-                entity_id: input_boolean.shutter_weekend_mode
-                state: 'off'
-              - condition: time
-                after: input_datetime.open_1st_and_2nd_floor_weekdays
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: 'on'
+            - condition: state
+              entity_id: input_boolean.shutter_weekend_mode
+              state: 'off'
             - condition: time
-              after: input_datetime.open_1st_and_2nd_floor_weekend
+              after: input_datetime.open_1st_and_2nd_floor_weekdays
+          - condition: time
+            after: input_datetime.open_1st_and_2nd_floor_weekend
+        then:
+        - if:
+          - condition: and
+            conditions:
+            - condition: time
+              after: input_datetime.shutters_blinds_summer_setting
+            - condition: numeric_state
+              entity_id: sensor.max_forecast_temperature_in_next_day
+              above: input_number.forecast_temerature_for_hot_day
           then:
-          - if:
-            - condition: and
-              conditions:
-              - condition: time
-                after: input_datetime.shutters_blinds_summer_setting
-              - condition: numeric_state
-                entity_id: sensor.max_forecast_temperature_in_next_day
-                above: input_number.forecast_temerature_for_hot_day
-            then:
-            - service: scene.turn_on
-              data: {}
-              target:
-                entity_id: scene.blinds_1st_floor_hot_day
-            else:
-            - service: cover.open_cover
-              data: {}
-              target:
-                entity_id:
-                - cover.shutters_1st_floor_kids
+          - service: scene.turn_on
+            data: {}
+            target:
+              entity_id: scene.blinds_1st_floor_hot_day
+          else:
+          - service: cover.open_cover
+            data: {}
+            target:
+              entity_id:
+              - cover.shutters_1st_floor_kids
   mode: single
   icon: mdi:window-shutter-auto
 shutters_2nd_floor:
@@ -448,10 +436,10 @@ shutters_2nd_floor:
       state: 'off'
     then:
     - if:
-      - alias: Nobody Home
-        condition: state
-        entity_id: input_boolean.nobody_home_mode
-        state: 'on'
+      - condition: state
+        entity_id: sun.sun
+        attribute: rising
+        state: false
       then:
       - service: cover.close_cover
         data: {}
@@ -461,34 +449,38 @@ shutters_2nd_floor:
           - cover.shutters_1st_floor
       else:
       - if:
-        - condition: state
-          entity_id: sun.sun
-          attribute: rising
-          state: false
-        then:
-        - service: cover.close_cover
-          data: {}
-          target:
-            entity_id:
-            - cover.blinds_2nd_floor
-            - cover.shutters_1st_floor
-        else:
-        - if:
-          - condition: or
+        - condition: or
+          conditions:
+          - condition: and
             conditions:
-            - condition: and
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: 'on'
+            - condition: state
+              entity_id: input_boolean.shutter_weekend_mode
+              state: 'off'
+            - condition: or
               conditions:
-              - condition: state
-                entity_id: binary_sensor.workday_sensor
-                state: 'on'
-              - condition: state
-                entity_id: input_boolean.shutter_weekend_mode
-                state: 'off'
               - condition: time
                 after: input_datetime.open_1st_and_2nd_floor_weekdays
+              - condition: time
+                after: input_datetime.2nd_floor_morning_mode
+          - condition: time
+            after: input_datetime.open_1st_and_2nd_floor_weekend
+        then:
+        - if:
+          - condition: and
+            conditions:
             - condition: time
-              after: input_datetime.open_1st_and_2nd_floor_weekend
+              after: input_datetime.2nd_floor_morning_mode
+            - condition: time
+              before: input_datetime.open_1st_and_2nd_floor_weekdays
           then:
+          - service: scene.turn_on
+            data: {}
+            target:
+              entity_id: scene.blinds_second_floor_morning
+          else:
           - if:
             - condition: and
               conditions:
@@ -511,3 +503,22 @@ shutters_2nd_floor:
                 - cover.shutters_1st_floor
   mode: single
   icon: mdi:window-shutter-auto
+christmas_tree:
+  alias: Christmas Tree
+  sequence:
+  - if:
+    - condition: state
+      entity_id: schedule.schedule_christmas_tree
+      state: 'on'
+    then:
+    - type: turn_on
+      device_id: 84732e8f18c85a1081837adcde98f507
+      entity_id: f8da323a095057ee03a4146644868434
+      domain: light
+    else:
+    - type: turn_off
+      device_id: 84732e8f18c85a1081837adcde98f507
+      entity_id: f8da323a095057ee03a4146644868434
+      domain: light
+  mode: single
+  icon: mdi:string-lights

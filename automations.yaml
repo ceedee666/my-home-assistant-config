@@ -91,6 +91,7 @@
     entity_id:
     - input_boolean.office_overwrite
     - schedule.schedule_wlan
+    - input_boolean.nobody_home_mode
   condition: []
   action:
   - service: script.turn_on
@@ -115,9 +116,6 @@
   alias: Shutters 1st Floor
   description: ''
   trigger:
-  - platform: state
-    entity_id:
-    - input_boolean.nobody_home_mode
   - platform: time
     at: input_datetime.open_1st_and_2nd_floor_weekdays
   - platform: time
@@ -141,9 +139,6 @@
   alias: Blinds 2nd Floor
   description: ''
   trigger:
-  - platform: state
-    entity_id:
-    - input_boolean.nobody_home_mode
   - platform: time
     at: input_datetime.open_1st_and_2nd_floor_weekdays
   - platform: time
@@ -155,26 +150,14 @@
   - platform: sun
     event: sunset
     offset: 00:30:00
+  - platform: time
+    at: input_datetime.2nd_floor_morning_mode
   condition: []
   action:
   - service: script.turn_on
     data: {}
     target:
       entity_id: script.shutters_2nd_floor
-  mode: single
-- id: '1685870854957'
-  alias: Front Door Light Switch - Turn on after sunset
-  description: ''
-  trigger:
-  - platform: sun
-    event: sunset
-    offset: 0
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
-    target:
-      device_id: e6c8abc9d127f425e67c65287626af59
   mode: single
 - id: '1686891084836'
   alias: Set Shutters For Hot Day
@@ -257,20 +240,6 @@
       - input_boolean.wlan_overwrite
       - input_boolean.office_overwrite
   mode: single
-- id: '1694605756593'
-  alias: Front Door Light Switch - Turn off after sunrise
-  description: ''
-  trigger:
-  - platform: sun
-    event: sunrise
-    offset: 0
-  condition: []
-  action:
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.light_control_front_door
-  mode: single
 - id: '1698833479067'
   alias: Waste Reminder
   description: ''
@@ -295,4 +264,74 @@
         }}
 
         '
+  mode: single
+- id: '1702556986356'
+  alias: Christmas Tree
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - schedule.schedule_christmas_tree
+  condition: []
+  action:
+  - service: script.christmas_tree
+    data: {}
+  mode: single
+- id: '1710062025585'
+  alias: Keep AI on the Edge turned on
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /5
+  condition:
+  - condition: device
+    type: is_off
+    device_id: 9a0799ee4f41a0925b59599ab733ebcd
+    entity_id: 7691be239c0c0fa6ad4aedb6b5ee8607
+    domain: switch
+  action:
+  - type: turn_on
+    device_id: 9a0799ee4f41a0925b59599ab733ebcd
+    entity_id: 7691be239c0c0fa6ad4aedb6b5ee8607
+    domain: switch
+  mode: single
+- id: '1710066302143'
+  alias: Front Door Light Automation
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /5
+  condition: []
+  action:
+  - if:
+    - condition: sun
+      after: sunset
+      before: sunrise
+      before_offset: '-30'
+      after_offset: '-30'
+    then:
+    - type: turn_on
+      device_id: 771d4e0bd142be14e91a82bddabb14c3
+      entity_id: b77621809f42672842d2bd7090912de1
+      domain: switch
+    else:
+    - type: turn_off
+      device_id: 771d4e0bd142be14e91a82bddabb14c3
+      entity_id: b77621809f42672842d2bd7090912de1
+      domain: switch
+  mode: single
+- id: '1710346621502'
+  alias: Deactivate Pi-Hole for 10min
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.deactivate_pi_hole_for_10_min
+  condition: []
+  action:
+  - service: pi_hole.disable
+    data:
+      duration: 00:10
+    target:
+      entity_id: switch.pi_hole
   mode: single
