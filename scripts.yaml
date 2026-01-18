@@ -13,16 +13,16 @@ set_livingroom_temperature:
         entity_id: input_boolean.heating_off
         state: 'on'
     then:
-    - service: climate.set_temperature
-      data:
-        temperature: 5
+    - data:
+        temperature: 10
       target:
-        entity_id: climate.thermostat_living_room
-    - service: climate.set_hvac_mode
-      data:
+        entity_id: climate.livingroom_thermostat
+      action: climate.set_temperature
+    - data:
         hvac_mode: 'off'
       target:
-        entity_id: climate.thermostat_living_room
+        entity_id: climate.livingroom_thermostat
+      action: climate.set_hvac_mode
     else:
     - if:
       - alias: Livingroom Climate Overwrite
@@ -30,16 +30,16 @@ set_livingroom_temperature:
         entity_id: input_boolean.livingroom_climate_overwrite
         state: 'on'
       then:
-      - service: climate.set_hvac_mode
-        data:
+      - data:
           hvac_mode: heat
         target:
-          entity_id: climate.thermostat_living_room
-      - service: climate.set_temperature
-        data:
+          entity_id: climate.livingroom_thermostat
+        action: climate.set_hvac_mode
+      - data:
           temperature: 20
         target:
-          entity_id: climate.thermostat_living_room
+          entity_id: climate.livingroom_thermostat
+        action: climate.set_temperature
       else:
       - if:
         - alias: Use Schedule
@@ -47,27 +47,27 @@ set_livingroom_temperature:
           entity_id: schedule.schedule_livingroom
           state: 'on'
         then:
-        - service: climate.set_hvac_mode
-          data:
+        - data:
             hvac_mode: heat
           target:
-            entity_id: climate.thermostat_living_room
-        - service: climate.set_temperature
-          data:
+            entity_id: climate.livingroom_thermostat
+          action: climate.set_hvac_mode
+        - data:
             temperature: 20
           target:
-            entity_id: climate.thermostat_living_room
+            entity_id: climate.livingroom_thermostat
+          action: climate.set_temperature
         else:
-        - service: climate.set_temperature
-          data:
-            temperature: 5
+        - data:
+            temperature: 10
           target:
-            entity_id: climate.thermostat_living_room
-        - service: climate.set_hvac_mode
-          data:
+            entity_id: climate.livingroom_thermostat
+          action: climate.set_temperature
+        - data:
             hvac_mode: 'off'
           target:
-            entity_id: climate.thermostat_living_room
+            entity_id: climate.livingroom_thermostat
+          action: climate.set_hvac_mode
   mode: single
   icon: mdi:thermometer-auto
 set_bathroom_temperature:
@@ -85,16 +85,16 @@ set_bathroom_temperature:
         entity_id: input_boolean.heating_off
         state: 'on'
     then:
-    - service: climate.set_temperature
-      data:
-        temperature: 5
+    - data:
+        temperature: 10
       target:
-        entity_id: climate.thermostat_bathroom_1st_floor
-    - service: climate.set_hvac_mode
-      data:
+        entity_id: climate.bathroom_1st_floor_thermostat
+      action: climate.set_temperature
+    - data:
         hvac_mode: 'off'
       target:
-        entity_id: climate.thermostat_bathroom_1st_floor
+        entity_id: climate.bathroom_1st_floor_thermostat
+      action: climate.set_hvac_mode
     else:
     - if:
       - alias: Bathroom Climate Overwrite
@@ -102,16 +102,16 @@ set_bathroom_temperature:
         entity_id: input_boolean.bathroom_climate_overwrite
         state: 'on'
       then:
-      - service: climate.set_hvac_mode
-        data:
+      - data:
           hvac_mode: heat
         target:
-          entity_id: climate.thermostat_bathroom_1st_floor
-      - service: climate.set_temperature
-        data:
+          entity_id: climate.bathroom_1st_floor_thermostat
+        action: climate.set_hvac_mode
+      - data:
           temperature: 22
         target:
-          entity_id: climate.thermostat_bathroom_1st_floor
+          entity_id: climate.bathroom_1st_floor_thermostat
+        action: climate.set_temperature
       else:
       - if:
         - alias: Use Schedule
@@ -119,27 +119,27 @@ set_bathroom_temperature:
           entity_id: schedule.schedule_bathroom_1st_floor
           state: 'on'
         then:
-        - service: climate.set_hvac_mode
-          data:
+        - data:
             hvac_mode: heat
           target:
-            entity_id: climate.thermostat_bathroom_1st_floor
-        - service: climate.set_temperature
-          data:
+            entity_id: climate.bathroom_1st_floor_thermostat
+          action: climate.set_hvac_mode
+        - data:
             temperature: 22
           target:
-            entity_id: climate.thermostat_bathroom_1st_floor
+            entity_id: climate.bathroom_1st_floor_thermostat
+          action: climate.set_temperature
         else:
-        - service: climate.set_temperature
-          data:
-            temperature: 5
+        - data:
+            temperature: 10
           target:
-            entity_id: climate.thermostat_bathroom_1st_floor
-        - service: climate.set_hvac_mode
-          data:
+            entity_id: climate.bathroom_1st_floor_thermostat
+          action: climate.set_temperature
+        - data:
             hvac_mode: 'off'
           target:
-            entity_id: climate.thermostat_bathroom_1st_floor
+            entity_id: climate.bathroom_1st_floor_thermostat
+          action: climate.set_hvac_mode
   mode: single
   icon: mdi:thermometer-auto
 shutter_ground_floor:
@@ -151,48 +151,54 @@ shutter_ground_floor:
       entity_id: input_boolean.nobody_home_mode
       state: 'on'
     then:
-    - service: cover.close_cover
-      data: {}
+    - data: {}
       target:
         entity_id:
         - cover.shutters_ground_floor
+      action: cover.close_cover
     else:
     - if:
-      - condition: state
-        entity_id: sun.sun
-        attribute: rising
-        state: false
+      - alias: Automation Not Disabled
+        condition: state
+        entity_id: input_boolean.disable_shutter_automation
+        state: 'off'
       then:
-      - service: cover.close_cover
-        data: {}
-        target:
-          entity_id:
-          - cover.shutters_ground_floor
-      else:
-      - service: cover.open_cover
-        data: {}
-        target:
-          entity_id:
-          - cover.shutters_living_room
       - if:
-        - condition: and
-          conditions:
-          - condition: time
-            after: input_datetime.shutters_blinds_summer_setting
-          - condition: numeric_state
-            entity_id: sensor.max_forecast_temperature_in_next_day
-            above: input_number.forecast_temerature_for_hot_day
+        - condition: state
+          entity_id: sun.sun
+          attribute: rising
+          state: false
         then:
-        - service: scene.turn_on
-          data: {}
-          target:
-            entity_id: scene.blinds_ground_floor_hot_day
-        else:
-        - service: cover.open_cover
-          data: {}
+        - data: {}
           target:
             entity_id:
-            - cover.shutter_kittchen
+            - cover.shutters_ground_floor
+          action: cover.close_cover
+        else:
+        - data: {}
+          target:
+            entity_id:
+            - cover.shutters_living_room
+          action: cover.open_cover
+        - if:
+          - condition: and
+            conditions:
+            - condition: time
+              after: input_datetime.shutters_blinds_summer_setting
+            - condition: numeric_state
+              entity_id: sensor.max_forecast_temperature_in_next_day
+              above: input_number.forecast_temerature_for_hot_day
+          then:
+          - data: {}
+            target:
+              entity_id: scene.blinds_ground_floor_hot_day
+            action: scene.turn_on
+          else:
+          - data: {}
+            target:
+              entity_id:
+              - cover.shutter_kittchen
+            action: cover.open_cover
   mode: single
   icon: mdi:window-shutter-auto
 offices_power_save:
@@ -248,126 +254,6 @@ offices_power_save:
             domain: switch
   mode: single
   icon: mdi:desk
-wlan_power_save:
-  alias: WLAN Power Save
-  sequence:
-  - if:
-    - alias: Nobody Home
-      condition: state
-      entity_id: input_boolean.nobody_home_mode
-      state: 'on'
-      for:
-        hours: 0
-        minutes: 5
-        seconds: 0
-    then:
-    - type: turn_off
-      device_id: cad162c8175f64ff891fc0e98b3f5fac
-      entity_id: 7902629467741c65285bd80a80bfbc00
-      domain: switch
-    else:
-    - if:
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: schedule.schedule_wlan
-          state: 'on'
-        - condition: state
-          entity_id: input_boolean.wlan_overwrite
-          state: 'on'
-      then:
-      - type: turn_on
-        device_id: cad162c8175f64ff891fc0e98b3f5fac
-        entity_id: 7902629467741c65285bd80a80bfbc00
-        domain: switch
-      else:
-      - type: turn_off
-        device_id: cad162c8175f64ff891fc0e98b3f5fac
-        entity_id: 7902629467741c65285bd80a80bfbc00
-        domain: switch
-  mode: single
-  icon: mdi:router-wireless
-tesla_charging_automation:
-  alias: Tesla Charging Automation
-  sequence:
-  - if:
-    - condition: and
-      conditions:
-      - condition: state
-        entity_id: input_boolean.disable_charging_automation
-        state: 'off'
-      - condition: state
-        entity_id: binary_sensor.tesla_wall_connector_vehicle_connected
-        state: 'on'
-    then:
-    - if:
-      - condition: and
-        conditions:
-        - condition: numeric_state
-          entity_id: sensor.battery_state_of_charge
-          below: 50
-        - condition: state
-          entity_id: input_boolean.set_discharge_limit_to_low
-          state: 'off'
-        - condition: state
-          entity_id: switch.ncc_1701_d_charger
-          state: 'on'
-      then:
-      - type: turn_off
-        device_id: 02ce900decca3c98b3948cc45919bbe9
-        entity_id: switch.ncc_1701_d_charger
-        domain: switch
-      - service: notify.mobile_app_christians_iphone_13
-        data:
-          title: NCC-1701-D Charging Stopped
-          message: "NCC-1701-D Charging Stopped - \U0001F50B {{states('sensor.ncc_1701_d_battery')}}%"
-      else:
-      - if:
-        - condition: and
-          conditions:
-          - condition: numeric_state
-            entity_id: sensor.battery_state_of_charge
-            below: 15
-          - condition: state
-            entity_id: input_boolean.set_discharge_limit_to_low
-            state: 'on'
-          - condition: state
-            entity_id: switch.ncc_1701_d_charger
-            state: 'on'
-        then:
-        - type: turn_off
-          device_id: 02ce900decca3c98b3948cc45919bbe9
-          entity_id: switch.ncc_1701_d_charger
-          domain: switch
-        - service: notify.mobile_app_christians_iphone_13
-          data:
-            title: NCC-1701-D Charging Stopped
-            message: "NCC-1701-D Charging Stopped - \U0001F50B {{states('sensor.ncc_1701_d_battery')}}%"
-        else:
-        - if:
-          - condition: and
-            conditions:
-            - condition: state
-              entity_id: binary_sensor.ncc_1701_d_charger
-              attribute: charging_state
-              state: Stopped
-            - condition: numeric_state
-              entity_id: sensor.battery_state_of_charge
-              above: 90
-            - condition: numeric_state
-              entity_id: sensor.ncc_1701_d_battery
-              below: number.ncc_1701_d_charge_limit
-          then:
-          - type: turn_on
-            device_id: 02ce900decca3c98b3948cc45919bbe9
-            entity_id: switch.ncc_1701_d_charger
-            domain: switch
-          - service: notify.mobile_app_christians_iphone_13
-            data:
-              title: NCC-1701-D Charging Started
-              message: "NCC-1701-D Charging Started - \U0001F50B {{states('sensor.ncc_1701_d_battery')}}%"
-  mode: single
-  icon: mdi:ev-station
 shutters_1st_floor:
   alias: Shutters 1st Floor Kids
   sequence:
@@ -400,34 +286,51 @@ shutters_1st_floor:
             - condition: state
               entity_id: input_boolean.shutter_weekend_mode
               state: 'off'
-            - condition: time
-              after: input_datetime.open_1st_and_2nd_floor_weekdays
+            - condition: or
+              conditions:
+              - condition: time
+                after: input_datetime.open_blinds_weekdays
+              - condition: time
+                after: input_datetime.blinds_morning_mode
           - condition: time
-            after: input_datetime.open_1st_and_2nd_floor_weekend
+            after: input_datetime.open_blinds_weekend
         then:
         - if:
           - condition: and
             conditions:
             - condition: time
-              after: input_datetime.shutters_blinds_summer_setting
-            - condition: numeric_state
-              entity_id: sensor.max_forecast_temperature_in_next_day
-              above: input_number.forecast_temerature_for_hot_day
+              after: input_datetime.blinds_morning_mode
+            - condition: time
+              before: input_datetime.open_blinds_weekdays
           then:
           - service: scene.turn_on
-            data: {}
+            metadata: {}
             target:
-              entity_id: scene.blinds_1st_floor_hot_day
+              entity_id: scene.shutters_1st_floor_morning
           else:
-          - service: cover.open_cover
-            data: {}
-            target:
-              entity_id:
-              - cover.shutters_1st_floor_kids
+          - if:
+            - condition: and
+              conditions:
+              - condition: time
+                after: input_datetime.shutters_blinds_summer_setting
+              - condition: numeric_state
+                entity_id: sensor.max_forecast_temperature_in_next_day
+                above: input_number.forecast_temerature_for_hot_day
+            then:
+            - service: scene.turn_on
+              data: {}
+              target:
+                entity_id: scene.blinds_1st_floor_hot_day
+            else:
+            - service: cover.open_cover
+              data: {}
+              target:
+                entity_id:
+                - cover.shutters_1st_floor_kids
   mode: single
   icon: mdi:window-shutter-auto
 shutters_2nd_floor:
-  alias: Blinds 2nd Floor and Shutters 1st Floor
+  alias: Blinds 2nd Floor
   sequence:
   - if:
     - alias: Automation Not Disabled
@@ -441,12 +344,11 @@ shutters_2nd_floor:
         attribute: rising
         state: false
       then:
-      - service: cover.close_cover
-        data: {}
+      - data: {}
         target:
           entity_id:
           - cover.blinds_2nd_floor
-          - cover.shutters_1st_floor
+        action: cover.close_cover
       else:
       - if:
         - condition: or
@@ -462,24 +364,25 @@ shutters_2nd_floor:
             - condition: or
               conditions:
               - condition: time
-                after: input_datetime.open_1st_and_2nd_floor_weekdays
+                after: input_datetime.open_blinds_weekdays
               - condition: time
-                after: input_datetime.2nd_floor_morning_mode
+                after: input_datetime.blinds_morning_mode
           - condition: time
-            after: input_datetime.open_1st_and_2nd_floor_weekend
+            after: input_datetime.open_blinds_weekend
         then:
         - if:
           - condition: and
             conditions:
             - condition: time
-              after: input_datetime.2nd_floor_morning_mode
+              after: input_datetime.blinds_morning_mode
             - condition: time
-              before: input_datetime.open_1st_and_2nd_floor_weekdays
+              before: input_datetime.open_blinds_weekdays
           then:
-          - service: scene.turn_on
-            data: {}
+          - metadata: {}
             target:
               entity_id: scene.blinds_second_floor_morning
+            action: scene.turn_on
+            data: {}
           else:
           - if:
             - condition: and
@@ -490,17 +393,15 @@ shutters_2nd_floor:
                 entity_id: sensor.max_forecast_temperature_in_next_day
                 above: input_number.forecast_temerature_for_hot_day
             then:
-            - service: scene.turn_on
+            - action: script.blinds_2nd_floor_hot_day
+              metadata: {}
               data: {}
-              target:
-                entity_id: scene.blinds_2nd_floor_hot_day
             else:
-            - service: cover.open_cover
-              data: {}
+            - data: {}
               target:
                 entity_id:
                 - cover.blinds_2nd_floor
-                - cover.shutters_1st_floor
+              action: cover.open_cover
   mode: single
   icon: mdi:window-shutter-auto
 christmas_tree:
@@ -522,3 +423,147 @@ christmas_tree:
       domain: light
   mode: single
   icon: mdi:string-lights
+shutters_1st_floor_2:
+  alias: Shutters 1st Floor
+  sequence:
+  - if:
+    - condition: state
+      entity_id: sun.sun
+      attribute: rising
+      state: false
+    then:
+    - service: cover.close_cover
+      data: {}
+      target:
+        entity_id:
+        - cover.shutter_bathroom_1st_floor
+        - cover.shutter_office_halszka
+    else:
+    - if:
+      - condition: and
+        conditions:
+        - condition: time
+          after: input_datetime.shutters_blinds_summer_setting
+        - condition: numeric_state
+          entity_id: sensor.max_forecast_temperature_in_next_day
+          above: input_number.forecast_temerature_for_hot_day
+      then:
+      - service: scene.turn_on
+        data: {}
+        target:
+          entity_id: scene.blinds_1st_floor_hot_day
+      else:
+      - service: cover.open_cover
+        data: {}
+        target:
+          entity_id:
+          - cover.shutter_bathroom_1st_floor
+          - cover.shutter_office_halszka
+  mode: single
+  icon: mdi:window-shutter-auto
+blinds_2nd_floor_hot_day:
+  sequence:
+  - action: cover.set_cover_position
+    metadata: {}
+    data:
+      position: 30
+    target:
+      entity_id:
+      - cover.blinds_bathroom_2nd_floor
+      - cover.shutter_office_christian
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 25
+      milliseconds: 0
+  - action: cover.set_cover_tilt_position
+    metadata: {}
+    data:
+      tilt_position: 30
+    target:
+      entity_id:
+      - cover.blinds_bathroom_2nd_floor
+      - cover.shutter_office_christian
+  alias: Blinds 2nd Floor Hot Day
+  description: ''
+bmw_charging_automation:
+  sequence:
+  - if:
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: input_boolean.disable_charging_automation
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.tesla_wall_connector_vehicle_connected
+        state: 'on'
+    then:
+    - if:
+      - condition: and
+        conditions:
+        - condition: numeric_state
+          entity_id: sensor.battery_state_of_charge
+          below: 50
+        - condition: state
+          entity_id: input_boolean.set_discharge_limit_to_low
+          state: 'off'
+        - condition: state
+          entity_id: switch.i5_edrive40_aufladung
+          state: 'on'
+      then:
+      - type: turn_off
+        device_id: 97674a0edff19cc2acbcc5fa588a3ec0
+        entity_id: 856d64b358149682603289e81701510b
+        domain: switch
+      - data:
+          title: i5 Charging Stopped
+          message: "i5 Charging Stopped - \U0001F50B {{states('sensor.i5_edrive40_verbleibende_batterie_in_prozent')}}%"
+        action: notify.mobile_app_christians_iphone_13
+      else:
+      - if:
+        - condition: and
+          conditions:
+          - condition: numeric_state
+            entity_id: sensor.battery_state_of_charge
+            below: 25
+          - condition: state
+            entity_id: input_boolean.set_discharge_limit_to_low
+            state: 'on'
+          - condition: state
+            entity_id: switch.i5_edrive40_aufladung
+            state: 'on'
+        then:
+        - type: turn_off
+          device_id: 97674a0edff19cc2acbcc5fa588a3ec0
+          entity_id: 856d64b358149682603289e81701510b
+          domain: switch
+        - data:
+            title: i5 Charging Stopped
+            message: "i5 Charging Stopped - \U0001F50B {{states('sensor.i5_edrive40_verbleibende_batterie_in_prozent')}}%"
+          action: notify.mobile_app_christians_iphone_13
+        else:
+        - if:
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: switch.i5_edrive40_aufladung
+              state: 'off'
+            - condition: numeric_state
+              entity_id: sensor.battery_state_of_charge
+              above: 90
+            - condition: numeric_state
+              entity_id: sensor.i5_edrive40_verbleibende_batterie_in_prozent
+              below: sensor.i5_edrive40_ladeziel
+          then:
+          - type: turn_on
+            device_id: 97674a0edff19cc2acbcc5fa588a3ec0
+            entity_id: 856d64b358149682603289e81701510b
+            domain: switch
+          - data:
+              title: i5 Charging Started
+              message: "i5 Charging Started - \U0001F50B {{states('sensor.i5_edrive40_verbleibende_batterie_in_prozent')}}%"
+            action: notify.mobile_app_christians_iphone_13
+  alias: BMW Charging Automation
+  mode: single
+  icon: mdi:ev-station
+  description: ''

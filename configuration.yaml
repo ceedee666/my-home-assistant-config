@@ -5,10 +5,6 @@ default_config:
 frontend:
   themes: !include_dir_merge_named themes
 
-# Set data retention period
-recorder:
-  purge_keep_days: 30
-
 # Enable Synology reverse proxy
 http:
   use_x_forwarded_for: true
@@ -20,12 +16,10 @@ tts:
   - platform: google_translate
 
 automation: !include automations.yaml
-climate: !include generic_thermostats.yaml
 group: !include groups.yaml
 input_boolean: !include inputs.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 sensor: !include sensor.yaml
-switch: !include switches.yaml
-template: !include template_sensors.yaml
+template: !include templates.yaml
 waste_collection_schedule: !include waste_schedule.yaml

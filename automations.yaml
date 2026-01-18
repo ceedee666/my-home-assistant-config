@@ -32,132 +32,42 @@
     target:
       entity_id: script.set_bathroom_temperature
   mode: single
-- id: '1669199427390'
-  alias: Shutters Ground Floor Automation
-  description: ''
-  trigger:
-  - platform: sun
-    event: sunrise
-    offset: '- 00:30:00'
-  - platform: sun
-    event: sunset
-    offset: 00:30:00
-  - platform: state
-    entity_id:
-    - input_boolean.nobody_home_mode
-  - platform: time
-    at: input_datetime.shutters_blinds_summer_setting
-  condition: []
-  action:
-  - service: script.turn_on
-    data: {}
-    target:
-      entity_id: script.shutter_ground_floor
-  mode: single
 - id: '1670275026327'
   alias: Offices Automation
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - input_boolean.office_overwrite
     - input_boolean.nobody_home_mode
     - input_button.activate_office_christian
-  - platform: state
-    entity_id:
-    - schedule.schedule_office_christian
-    from: 'on'
-    to: 'off'
-  - platform: state
-    entity_id:
+    trigger: state
+  - entity_id:
     - group.parents
     to: not_home
     for:
       hours: 0
       minutes: 15
       seconds: 0
-  condition: []
-  action:
-  - service: script.turn_on
-    data: {}
+    trigger: state
+  conditions: []
+  actions:
+  - data: {}
     target:
       entity_id: script.offices_power_save
-  mode: single
-- id: '1670587127896'
-  alias: WLAN Automation
-  description: WLAN Power Save Trigger
-  trigger:
-  - platform: state
-    entity_id:
-    - input_boolean.office_overwrite
-    - schedule.schedule_wlan
-    - input_boolean.nobody_home_mode
-  condition: []
-  action:
-  - service: script.turn_on
-    data: {}
-    target:
-      entity_id: script.wlan_power_save
+    action: script.turn_on
   mode: single
 - id: '1681925944850'
-  alias: Tesal Charging Automation
+  alias: Car Charging Automation
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - sensor.battery_state_of_charge
     - binary_sensor.ncc_1701_d_charger
-  condition: []
-  action:
-  - service: script.tesla_charging_automation
+    trigger: state
+  conditions: []
+  actions:
+  - action: script.bmw_charging_automation
     data: {}
-  mode: single
-- id: '1685264181900'
-  alias: Shutters 1st Floor
-  description: ''
-  trigger:
-  - platform: time
-    at: input_datetime.open_1st_and_2nd_floor_weekdays
-  - platform: time
-    at: input_datetime.open_1st_and_2nd_floor_weekend
-  - platform: time
-    at: input_datetime.close_shutters_1st_floor
-  - platform: time
-    at: input_datetime.shutters_blinds_summer_setting
-  - platform: sun
-    event: sunset
-    offset: 00:30:00
-  condition: []
-  action:
-  - service: script.turn_on
-    data: {}
-    target:
-      entity_id:
-      - script.shutters_1st_floor
-  mode: single
-- id: '1685391195611'
-  alias: Blinds 2nd Floor
-  description: ''
-  trigger:
-  - platform: time
-    at: input_datetime.open_1st_and_2nd_floor_weekdays
-  - platform: time
-    at: input_datetime.open_1st_and_2nd_floor_weekend
-  - platform: time
-    at: input_datetime.close_blinds_2nd_floor
-  - platform: time
-    at: input_datetime.shutters_blinds_summer_setting
-  - platform: sun
-    event: sunset
-    offset: 00:30:00
-  - platform: time
-    at: input_datetime.2nd_floor_morning_mode
-  condition: []
-  action:
-  - service: script.turn_on
-    data: {}
-    target:
-      entity_id: script.shutters_2nd_floor
   mode: single
 - id: '1686891084836'
   alias: Set Shutters For Hot Day
@@ -265,18 +175,6 @@
 
         '
   mode: single
-- id: '1702556986356'
-  alias: Christmas Tree
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - schedule.schedule_christmas_tree
-  condition: []
-  action:
-  - service: script.christmas_tree
-    data: {}
-  mode: single
 - id: '1710062025585'
   alias: Keep AI on the Edge turned on
   description: ''
@@ -320,18 +218,275 @@
       entity_id: b77621809f42672842d2bd7090912de1
       domain: switch
   mode: single
-- id: '1710346621502'
-  alias: Deactivate Pi-Hole for 10min
+- id: '1712815128431'
+  alias: Blinds 2nd Floor Automation
+  description: ''
+  triggers:
+  - at: input_datetime.open_blinds_weekdays
+    trigger: time
+  - at: input_datetime.open_blinds_weekend
+    trigger: time
+  - at: input_datetime.shutters_blinds_summer_setting
+    trigger: time
+  - at: input_datetime.blinds_morning_mode
+    trigger: time
+  - event: sunset
+    offset: 00:30:00
+    trigger: sun
+  - at: input_datetime.close_blinds_2nd_floor
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
+    target:
+      entity_id:
+      - script.shutters_2nd_floor
+    action: script.turn_on
+  mode: single
+- id: '1712854474570'
+  alias: Shutters Ground Floor Automation
+  description: ''
+  triggers:
+  - at: input_datetime.shutters_blinds_summer_setting
+    trigger: time
+  - event: sunset
+    offset: 00:30:00
+    trigger: sun
+  - at: input_datetime.open_blinds_weekdays
+    trigger: time
+  - at: input_datetime.open_blinds_weekend
+    trigger: time
+  - entity_id:
+    - input_boolean.nobody_home_mode
+    trigger: state
+  - at: input_datetime.blinds_morning_mode
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
+    target:
+      entity_id:
+      - script.shutter_ground_floor
+    action: script.turn_on
+  mode: single
+- id: '1712854592402'
+  alias: Shutters 1st Floor Kids Automation
+  description: ''
+  triggers:
+  - at: input_datetime.open_blinds_weekdays
+    trigger: time
+  - at: input_datetime.open_blinds_weekend
+    trigger: time
+  - at: input_datetime.close_shutters_1st_floor
+    trigger: time
+  - at: input_datetime.shutters_blinds_summer_setting
+    trigger: time
+  - at: input_datetime.blinds_morning_mode
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
+    target:
+      entity_id:
+      - script.shutters_1st_floor_kids
+    action: script.turn_on
+  mode: single
+- id: '1712854691833'
+  alias: Shutters 1st Floor Others Automation
+  description: ''
+  triggers:
+  - at: input_datetime.shutters_blinds_summer_setting
+    trigger: time
+  - event: sunset
+    offset: 00:30:00
+    trigger: sun
+  - at: input_datetime.open_blinds_weekdays
+    trigger: time
+  - at: input_datetime.open_blinds_weekend
+    trigger: time
+  - at: input_datetime.blinds_morning_mode
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
+    target:
+      entity_id:
+      - script.shutters_1st_floor
+    action: script.turn_on
+  mode: single
+- id: '1715704720672'
+  alias: Freezer Power Notification
   description: ''
   trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.smart_plug_freezer_switch_0_power
+    for:
+      hours: 8
+      minutes: 0
+      seconds: 0
+    below: 5
   - platform: state
     entity_id:
-    - input_button.deactivate_pi_hole_for_10_min
+    - switch.smart_plug_freezer_switch_0
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
   condition: []
   action:
-  - service: pi_hole.disable
+  - service: notify.notify
+    metadata: {}
     data:
-      duration: 00:10
+      message: Der Gefrierschrank ist seit 8 Stunden ohne Strom. Bitte überprüfen!
+      title: Gefrierschrank ohne Strom ⚠️
+  mode: single
+- id: '1715705954425'
+  alias: Keep Freezer Turned On
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /5
+  condition:
+  - condition: device
+    type: is_off
+    device_id: b9f3c606b010de6cabfbd15da497c953
+    entity_id: 3e004873a93f6404473b2b24ffcf593a
+    domain: switch
+  action:
+  - type: turn_on
+    device_id: b9f3c606b010de6cabfbd15da497c953
+    entity_id: 3e004873a93f6404473b2b24ffcf593a
+    domain: switch
+  mode: single
+- id: '1718996681108'
+  alias: Send Kiss
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: person.christian
+    zone: zone.home
+    event: leave
+  condition: []
+  action:
+  - service: notify.mobile_app_halszka_s_iphone
+    metadata: {}
+    data:
+      title: "\U0001F618"
+      message: "\U0001F48B"
+  mode: single
+- id: '1718997963687'
+  alias: 'Alert Notification '
+  description: 'Trigger notification if parents are not home and doors or window is
+    opend. '
+  trigger:
+  - type: opened
+    platform: device
+    device_id: ae694eaf6e6e0ec3d425ee9d3a31947f
+    entity_id: cfcf3ca8b242225613bd1ef79bc43a3f
+    domain: binary_sensor
+  - type: opened
+    platform: device
+    device_id: 407f9617c148ebe50eb84bffc5050c7d
+    entity_id: 54621368457eb75d1e9480edb4431642
+    domain: binary_sensor
+  - type: opened
+    platform: device
+    device_id: d8594f045aecbfff317ec142afeb7364
+    entity_id: c9e75e1a5d72d8c1871d8567f4c1e38b
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: group.parents
+    state: not_home
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  action:
+  - service: notify.mobile_app_christians_iphone_13
+    metadata: {}
+    data:
+      message: '"Haustür {% if is_state(''binary_sensor.front_door_sensor_window'',
+        ''on'') %}offen{% else %}geschlossen{% endif %}!" "Küchenfenster {% if is_state(''binary_sensor.kitchen_window_sensor_window'',
+        ''on'') %}offen{% else %}geschlossen{% endif %}!" "Schiebetür {% if is_state(''binary_sensor.sliding_door_sensor_window'',
+        ''on'') %}offen{% else %}geschlossen{% endif %}!"'
+      title: "⚠️ \U0001F6A8 Tür oder Fenster wurde geöffnet"
+  - service: notify.mobile_app_halszka_s_iphone
+    metadata: {}
+    data:
+      message: '"Haustür {% if is_state(''binary_sensor.front_door_sensor_window'',
+        ''on'') %}offen{% else %}geschlossen{% endif %}!" "Küchenfenster {% if is_state(''binary_sensor.kitchen_window_sensor_window'',
+        ''on'') %}offen{% else %}geschlossen{% endif %}!" "Schiebetür {% if is_state(''binary_sensor.sliding_door_sensor_window'',
+        ''on'') %}offen{% else %}geschlossen{% endif %}!"'
+      title: "⚠️ \U0001F6A8 Tür oder Fenster wurde geöffnet"
+  mode: single
+- id: '1735472217176'
+  alias: Notifiy when 3d print is finished
+  description: Trigger notification when the current 3d print is finished
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.creality_ender_3v3_ke_current_print_state
+    from: printing
+    to: complete
+  conditions: []
+  actions:
+  - metadata: {}
+    data:
+      message: '"Der aktuelle 3D-Druck wurde gerade beendet."'
+      title: "\U0001F44B 3D-Druck beendet"
+    action: notify.mobile_app_christians_iphone_13
+  mode: single
+- id: '1737975332313'
+  alias: Reset Living Room Heating Overwrite
+  description: ''
+  triggers:
+  - entity_id:
+    - input_boolean.livingroom_climate_overwrite
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 12
+      minutes: 0
+      seconds: 0
+    trigger: state
+  conditions: []
+  actions:
+  - data: {}
+    action: homeassistant.turn_off
     target:
-      entity_id: switch.pi_hole
+      entity_id: input_boolean.livingroom_climate_overwrite
+  mode: single
+- id: '1750347757577'
+  alias: Motion Activated Light Garden
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.bthome_sensor_7ea0_motion
+      light_target:
+        area_id: garden
+- id: '1762014286453'
+  alias: Motion-activated Light Front Door
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.hue_outdoor_motion_sensor_1_motion
+      light_target:
+        device_id: 22018b1a8915217ad14d14eef8474ac6
+- id: '1765133414002'
+  alias: 'Christmas Tree Automation '
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - schedule.schedule_christmas_tree
+  conditions: []
+  actions:
+  - action: script.christmas_tree
+    metadata: {}
+    data: {}
   mode: single
